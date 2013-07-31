@@ -1,0 +1,3 @@
+Fricatives, , , , , ,ɧ,Simultaneous ʃ and x, ,
+Approximants, ,ʍ,Voiceless Labio-Velar Fricative,w,Voiced Labio-Velar Approximant,ɥ,Voiced Labio-Palatal Approximant,ɫ,Velarized Alveolar Lateral Approximant
+Stops, ,kp,Voiceless Labial-Velar Plosive,gb,Voiced Labial-Velar Plosive,ŋm,Labial-Velar Nasal, ,

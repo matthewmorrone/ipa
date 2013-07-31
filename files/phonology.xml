@@ -1,0 +1,575 @@
+<phonology>  
+     <features>
+    <!-- True Features -->
+    <feature name="ROOT" type="privative">
+      <child name="sonorant" />
+      <child name="approximant" />
+      <child name="vocoid" />
+      <child name="nasal" />
+      <child name="lateral" />
+      <child name="continuant" />
+      <child name="Laryngeal" />
+      <child name="Place" />
+    </feature>
+    <feature name="sonorant" type="privative" />
+    <feature name="approximant" type="privative" />
+    <feature name="vocoid" type="privative" />
+    <feature name="nasal" type="privative" />
+    <feature name="lateral" type="privative" />
+    <feature name="continuant" type="binary" />
+    <feature name="Laryngeal" type="privative">
+      <child name="spread" />
+      <child name="constricted" />
+      <child name="voice" />
+      <child name="ATR" />
+    </feature>
+    <feature name="spread" type="privative" />
+    <feature name="constricted" type="privative" />
+    <feature name="voice" type="privative" />
+    <feature name="advanced_tongue_root" type="binary" />
+    <feature name="Place" type="privative">
+      <child name="pharyngeal" />
+      <child name="Oral" />
+    </feature>
+    <feature name="pharyngeal" type="privative" />
+    <feature name="Oral" type="privative">
+      <child name="labial" />
+      <child name="Lingual" />
+      <child name="Vocalic" />
+    </feature>
+    <feature name="labial" type="privative" />
+    <feature name="Lingual" type="privative">
+      <child name="Coronal" />
+      <child name="dorsal" />
+    </feature>
+    <feature name="dorsal" type="privative" />
+    <feature name="Coronal" type="privative">
+      <child name="anterior" />
+      <child name="distributed" />
+    </feature>
+    <feature name="anterior" type="binary" />
+    <feature name="distributed" type="binary" />
+    <feature name="Vocalic" type="privative">
+      <child name="Vplace" />
+      <child name="aperture" />
+      <child name="tense" />
+    </feature>
+    <feature name="aperture" type="scalar" />
+    <feature name="tense" type="binary" />
+    <feature name="Vplace" type="privative">
+      <child name="labial" />
+      <child name="Lingual" />
+    </feature>
+    <!-- Syllabification Features -->
+    <feature name="SYLL" type="scalar">
+      <child name="onset" />
+      <child name="Rime" />
+    </feature>
+    <feature name="onset" type="privative" />
+    <feature name="Rime" type="privative">
+      <child name="nucleus" />
+      <child name="coda" />
+    </feature>
+    <feature name="nucleus" type="privative" />
+    <feature name="coda" type="privative" />
+    <feature name="SON" type="scalar" />
+  </features>    
+  <symbols>
+    <!-- Consonants -->
+    <!-- Labials -->
+    <symbol label="p">
+      <feature value="0" name="continuant" />
+      <feature value="1" name="labial" />
+    </symbol>
+    <symbol label="b">
+      <feature value="1" name="voice" />
+      <feature value="0" name="continuant" />
+      <feature value="1" name="labial" />
+    </symbol>
+    <symbol label="f">
+      <feature value="1" name="continuant" />
+      <feature value="1" name="labial" />
+    </symbol>
+    <symbol label="v">
+      <feature value="1" name="voice" />
+      <feature value="1" name="continuant" />
+      <feature value="1" name="labial" />
+    </symbol>
+    <symbol label="m">
+      <feature value="1" name="sonorant" />
+      <feature value="0" name="continuant" />
+      <feature value="1" name="nasal" />
+      <feature value="1" name="labial" />
+    </symbol>
+
+    <!-- Dentals and alveolars -->
+    <symbol label="t">
+      <feature value="1" name="anterior" />
+      <feature value="0" name="continuant" />
+    </symbol>
+    <symbol label="d">
+      <feature value="1" name="voice" />
+      <feature value="1" name="anterior" />
+      <feature value="0" name="continuant" />
+    </symbol>
+    <symbol label="T">
+      <feature value="1" name="anterior" />
+      <feature value="1" name="continuant" />
+      <feature value="1" name="distributed" />
+    </symbol>
+    <symbol label="D">
+      <feature value="1" name="voice" />
+      <feature value="1" name="anterior" />
+      <feature value="1" name="continuant" />
+      <feature value="1" name="distributed" />
+    </symbol>
+    <symbol label="s">
+      <feature value="1" name="anterior" />
+      <feature value="1" name="continuant" />
+      <feature value="0" name="distributed" />
+    </symbol>
+    <symbol label="z">
+      <feature value="1" name="voice" />
+      <feature value="1" name="anterior" />
+      <feature value="1" name="continuant" />
+      <feature value="0" name="distributed" />
+    </symbol>
+    <symbol label="n">
+      <feature value="1" name="sonorant" />
+      <feature value="1" name="anterior" />
+      <feature value="0" name="continuant" />
+      <feature value="1" name="nasal" />
+    </symbol>
+    <symbol label="l">
+      <feature value="1" name="lateral" />
+      <feature value="1" name="sonorant" />
+      <feature value="1" name="anterior" />
+      <feature value="1" name="approximant" />
+    </symbol>
+    <symbol label="r">
+      <feature value="1" name="sonorant" />
+      <feature value="1" name="anterior" />
+      <feature value="1" name="approximant" />
+    </symbol>
+    <!-- Postalveolar -->
+    <symbol label="tS">
+      <feature value="0" name="anterior" />
+      <feature value="0" name="continuant" />
+      <feature value="1" name="distributed" />
+    </symbol>
+    <symbol label="dZ">
+      <feature value="1" name="voice" />
+      <feature value="0" name="anterior" />
+      <feature value="0" name="continuant" />
+      <feature value="1" name="distributed" />
+    </symbol>
+    <symbol label="S">
+      <feature value="0" name="anterior" />
+      <feature value="1" name="continuant" />
+      <feature value="1" name="distributed" />
+    </symbol>
+    <symbol label="Z">
+      <feature value="1" name="voice" />
+      <feature value="0" name="anterior" />
+      <feature value="1" name="continuant" />
+      <feature value="1" name="distributed" />
+    </symbol>
+    <!-- Retroflex -->
+    <symbol label="t`">
+      <feature value="0" name="anterior" />
+      <feature value="0" name="continuant" />
+      <feature value="0" name="distributed" />
+    </symbol>
+    <symbol label="d`">
+      <feature value="1" name="voice" />
+      <feature value="0" name="anterior" />
+      <feature value="0" name="continuant" />
+      <feature value="0" name="distributed" />
+    </symbol>
+    <symbol label="s`">
+      <feature value="0" name="anterior" />
+      <feature value="1" name="continuant" />
+      <feature value="0" name="distributed" />
+    </symbol>
+    <symbol label="z`">
+      <feature value="1" name="voice" />
+      <feature value="0" name="anterior" />
+      <feature value="1" name="continuant" />
+      <feature value="0" name="distributed" />
+    </symbol>
+    <symbol label="n`">
+      <feature value="1" name="sonorant" />
+      <feature value="0" name="anterior" />
+      <feature value="0" name="continuant" />
+      <feature value="1" name="nasal" />
+      <feature value="0" name="distributed" />
+    </symbol>
+    <symbol label="l`">
+      <feature value="1" name="lateral" />
+      <feature value="1" name="sonorant" />
+      <feature value="0" name="anterior" />
+      <feature value="0" name="distributed" />
+      <feature value="1" name="approximant" />
+    </symbol>
+    <symbol label="r`">
+      <feature value="1" name="sonorant" />
+      <feature value="0" name="anterior" />
+      <feature value="0" name="distributed" />
+      <feature value="1" name="approximant" />
+    </symbol>
+    <!-- Palatal -->
+    <symbol label="c">
+      <feature value="0" name="continuant" />
+      <feature value="0" name="anterior" />
+      <feature value="1" name="dorsal" />
+    </symbol>
+    <symbol label="d\">
+      <feature value="1" name="voice" />
+      <feature value="0" name="anterior" />
+      <feature value="0" name="continuant" />
+      <feature value="1" name="dorsal" />
+    </symbol>
+    <symbol label="C">
+      <feature value="0" name="anterior" />
+      <feature value="1" name="continuant" />
+      <feature value="1" name="dorsal" />
+    </symbol>
+    <symbol label="j\">
+      <feature value="1" name="voice" />
+      <feature value="0" name="anterior" />
+      <feature value="1" name="continuant" />
+      <feature value="1" name="dorsal" />
+    </symbol>
+    <symbol label="J">
+      <feature value="1" name="sonorant" />
+      <feature value="0" name="anterior" />
+      <feature value="0" name="continuant" />
+      <feature value="1" name="nasal" />
+      <feature value="1" name="dorsal" />
+    </symbol>
+    <symbol label="L">
+      <feature value="1" name="lateral" />
+      <feature value="1" name="sonorant" />
+      <feature value="0" name="anterior" />
+      <feature value="1" name="approximant" />
+      <feature value="1" name="dorsal" />
+    </symbol>
+    <!-- Velar -->
+    <symbol label="k">
+      <feature value="0" name="continuant" />
+      <feature value="1" name="dorsal" />
+    </symbol>
+    <symbol label="g">
+      <feature value="1" name="voice" />
+      <feature value="0" name="continuant" />
+      <feature value="1" name="dorsal" />
+    </symbol>
+    <symbol label="x">
+      <feature value="1" name="continuant" />
+      <feature value="1" name="dorsal" />
+    </symbol>
+    <symbol label="G">
+      <feature value="1" name="voice" />
+      <feature value="1" name="continuant" />
+      <feature value="1" name="dorsal" />
+    </symbol>
+    <symbol label="N">
+      <feature value="1" name="sonorant" />
+      <feature value="0" name="continuant" />
+      <feature value="1" name="nasal" />
+      <feature value="1" name="dorsal" />
+    </symbol>
+    <!-- Uvular -->
+    <symbol label="q">
+      <feature value="1" name="pharyngeal" />
+      <feature value="0" name="continuant" />
+      <feature value="1" name="dorsal" />
+    </symbol>
+    <symbol label="G\">
+      <feature value="1" name="voice" />
+      <feature value="1" name="pharyngeal" />
+      <feature value="0" name="continuant" />
+      <feature value="1" name="dorsal" />
+    </symbol>
+    <symbol label="X">
+      <feature value="1" name="pharyngeal" />
+      <feature value="1" name="continuant" />
+      <feature value="1" name="dorsal" />
+    </symbol>
+    <symbol label="R">
+      <feature value="1" name="voice" />
+      <feature value="1" name="pharyngeal" />
+      <feature value="1" name="continuant" />
+      <feature value="1" name="dorsal" />
+    </symbol>
+    <symbol label="N\">
+      <feature value="1" name="sonorant" />
+      <feature value="1" name="pharyngeal" />
+      <feature value="0" name="continuant" />
+      <feature value="1" name="nasal" />
+      <feature value="1" name="dorsal" />
+    </symbol>
+    <symbol label="R\">
+      <feature value="1" name="sonorant" />
+      <feature value="1" name="pharyngeal" />
+      <feature value="1" name="approximant" />
+      <feature value="1" name="dorsal" />
+    </symbol>
+    <!-- Pharyngeal -->
+    <symbol label="q\">
+      <feature value="1" name="pharyngeal" />
+      <feature value="0" name="continuant" />
+    </symbol>
+    <symbol label="X\">
+      <feature value="1" name="pharyngeal" />
+      <feature value="1" name="continuant" />
+    </symbol>
+    <symbol label="?\">
+      <feature value="1" name="voice" />
+      <feature value="1" name="pharyngeal" />
+      <feature value="1" name="continuant" />
+    </symbol>
+    <!-- Glottal -->
+    <symbol label="?">
+      <feature value="*" name="Place" />
+      <feature value="0" name="continuant" />
+    </symbol>
+    <symbol label="h">
+      <feature value="*" name="Place" />
+      <feature value="1" name="continuant" />
+    </symbol>
+    <symbol label="h\">
+      <feature value="*" name="Place" />
+      <feature value="1" name="voice" />
+      <feature value="1" name="continuant" />
+    </symbol>
+    <!-- Vowels -->
+    <!-- High Front Vowels -->
+    <symbol label="i">
+      <feature value="1" name="tense" />
+      <feature value="1" name="sonorant" />
+      <feature value="0" name="anterior" />
+      <feature value="1" name="vocoid" />
+      <feature value="0" name="aperture" />
+      <feature value="1" name="approximant" />
+    </symbol>
+    <symbol label="I">
+      <feature value="1" name="sonorant" />
+      <feature value="0" name="anterior" />
+      <feature value="1" name="vocoid" />
+      <feature value="0" name="aperture" />
+      <feature value="1" name="approximant" />
+    </symbol>
+    <symbol label="y">
+      <feature value="1" name="tense" />
+      <feature value="1" name="sonorant" />
+      <feature value="0" name="anterior" />
+      <feature value="1" name="vocoid" />
+      <feature value="0" name="aperture" />
+      <feature value="1" name="labial" />
+      <feature value="1" name="approximant" />
+    </symbol>
+    <symbol label="Y">
+      <feature value="1" name="sonorant" />
+      <feature value="0" name="anterior" />
+      <feature value="1" name="vocoid" />
+      <feature value="0" name="aperture" />
+      <feature value="1" name="labial" />
+      <feature value="1" name="approximant" />
+    </symbol>
+    <symbol label="j">
+      <feature value="1" name="tense" />
+      <feature value="1" name="sonorant" />
+      <feature value="0" name="anterior" />
+      <feature value="1" name="vocoid" />
+      <feature value="*" name="nucleus" />
+      <feature value="0" name="aperture" />
+      <feature value="1" name="approximant" />
+    </symbol>
+    <symbol label="H">
+      <feature value="1" name="tense" />
+      <feature value="1" name="sonorant" />
+      <feature value="0" name="anterior" />
+      <feature value="1" name="vocoid" />
+      <feature value="*" name="nucleus" />
+      <feature value="0" name="aperture" />
+      <feature value="1" name="approximant" />
+      <feature value="1" name="labial" />
+    </symbol>
+    <!-- High Back Vowels -->
+    <symbol label="u">
+      <feature value="1" name="tense" />
+      <feature value="1" name="sonorant" />
+      <feature value="1" name="vocoid" />
+      <feature value="0" name="aperture" />
+      <feature value="1" name="labial" />
+      <feature value="1" name="dorsal" />
+      <feature value="1" name="approximant" />
+    </symbol>
+    <symbol label="U">
+      <feature value="1" name="sonorant" />
+      <feature value="1" name="vocoid" />
+      <feature value="0" name="aperture" />
+      <feature value="1" name="labial" />
+      <feature value="1" name="dorsal" />
+      <feature value="1" name="approximant" />
+    </symbol>
+    <symbol label="M">
+      <feature value="1" name="sonorant" />
+      <feature value="1" name="vocoid" />
+      <feature value="0" name="aperture" />
+      <feature value="1" name="labial" />
+      <feature value="1" name="dorsal" />
+      <feature value="1" name="approximant" />
+    </symbol>
+    <symbol label="w">
+      <feature value="1" name="tense" />
+      <feature value="1" name="sonorant" />
+      <feature value="1" name="vocoid" />
+      <feature value="*" name="nucleus" />
+      <feature value="0" name="aperture" />
+      <feature value="1" name="approximant" />
+      <feature value="1" name="dorsal" />
+      <feature value="1" name="labial" />
+    </symbol>
+    <!-- High Central Vowels -->
+    <symbol label="1">
+      <feature value="1" name="sonorant" />
+      <feature value="1" name="vocoid" />
+      <feature value="0" name="aperture" />
+      <feature value="1" name="approximant" />
+    </symbol>
+    <symbol label="}">
+      <feature value="1" name="sonorant" />
+      <feature value="1" name="vocoid" />
+      <feature value="0" name="aperture" />
+      <feature value="1" name="labial" />
+      <feature value="1" name="approximant" />
+    </symbol>
+    <!-- Mid Front Vowels -->
+    <symbol label="e">
+      <feature value="1" name="tense" />
+      <feature value="1" name="sonorant" />
+      <feature value="0" name="anterior" />
+      <feature value="1" name="vocoid" />
+      <feature value="1" name="aperture" />
+      <feature value="1" name="approximant" />
+    </symbol>
+    <symbol label="E">
+      <feature value="1" name="sonorant" />
+      <feature value="0" name="anterior" />
+      <feature value="1" name="vocoid" />
+      <feature value="1" name="aperture" />
+      <feature value="1" name="approximant" />
+    </symbol>
+    <symbol label="2">
+      <feature value="1" name="tense" />
+      <feature value="1" name="sonorant" />
+      <feature value="0" name="anterior" />
+      <feature value="1" name="vocoid" />
+      <feature value="1" name="aperture" />
+      <feature value="1" name="approximant" />
+      <feature value="1" name="labial" />
+    </symbol>
+    <symbol label="9">
+      <feature value="1" name="sonorant" />
+      <feature value="0" name="anterior" />
+      <feature value="1" name="vocoid" />
+      <feature value="1" name="aperture" />
+      <feature value="1" name="approximant" />
+      <feature value="1" name="labial" />
+    </symbol>
+    <!-- Mid Back Vowels -->
+    <symbol label="o">
+      <feature value="1" name="tense" />
+      <feature value="1" name="sonorant" />
+      <feature value="1" name="vocoid" />
+      <feature value="1" name="aperture" />
+      <feature value="1" name="labial" />
+      <feature value="1" name="dorsal" />
+      <feature value="1" name="approximant" />
+    </symbol>
+    <symbol label="O">
+      <feature value="1" name="sonorant" />
+      <feature value="1" name="vocoid" />
+      <feature value="1" name="aperture" />
+      <feature value="1" name="labial" />
+      <feature value="1" name="dorsal" />
+      <feature value="1" name="approximant" />
+    </symbol>
+    <symbol label="W">
+      <feature value="1" name="tense" />
+      <feature value="1" name="sonorant" />
+      <feature value="1" name="vocoid" />
+      <feature value="1" name="aperture" />
+      <feature value="1" name="dorsal" />
+      <feature value="1" name="approximant" />
+    </symbol>
+    <symbol label="V">
+      <feature value="1" name="sonorant" />
+      <feature value="1" name="vocoid" />
+      <feature value="1" name="aperture" />
+      <feature value="1" name="dorsal" />
+      <feature value="1" name="approximant" />
+    </symbol>
+    <!-- Mid Central Vowels -->
+    <symbol label="@">
+      <feature value="1" name="sonorant" />
+      <feature value="1" name="vocoid" />
+      <feature value="1" name="aperture" />
+      <feature value="1" name="approximant" />
+    </symbol>
+    <symbol label="8">
+      <feature value="1" name="sonorant" />
+      <feature value="1" name="vocoid" />
+      <feature value="1" name="aperture" />
+      <feature value="1" name="labial" />
+      <feature value="1" name="approximant" />
+    </symbol>
+    <!-- Low Vowels -->
+    <symbol label="a">
+      <feature value="1" name="sonorant" />
+      <feature value="1" name="vocoid" />
+      <feature value="2" name="aperture" />
+      <feature value="1" name="approximant" />
+    </symbol>
+    <symbol label="Q">
+      <feature value="1" name="sonorant" />
+      <feature value="1" name="vocoid" />
+      <feature value="2" name="aperture" />
+      <feature value="1" name="labial" />
+      <feature value="1" name="approximant" />
+    </symbol>
+    <!-- Diacritics -->
+    <symbol label="*~">
+      <feature value="1" name="nasal" />
+    </symbol>
+    <symbol label="*_?\">
+      <feature value="1" name="pharyngeal" />
+    </symbol>
+    <symbol label="*_v">
+      <feature value="1" name="voice" />
+    </symbol>
+    <symbol label="*_h">
+      <feature value="1" name="spread" />
+    </symbol>
+    <symbol label="*_w">
+      <feature value="1" name="labial" />
+    </symbol>
+    <symbol label="*_l">
+      <feature value="1" name="lateral" />
+    </symbol>
+    <symbol label="*_~">
+      <feature value="1" name="constricted" />
+    </symbol>
+    <symbol label="*_G">
+      <feature value="1" name="dorsal" />
+    </symbol>
+    <symbol label="*_0">
+      <feature value="*" name="voice" />
+    </symbol>
+    <symbol label="*_d">
+      <feature value="1" name="distributed" />
+    </symbol>
+  </symbols>
+</phonology>

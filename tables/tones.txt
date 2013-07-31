@@ -1,0 +1,8 @@
+Tone,,Contour,
+˥,Extra High,˩˥,Rising
+˦,High,˥˩,Falling
+˧,Mid,˦˥,High Rising
+˨,Low,˩˨,Low Rising
+˩,Extra Low,˧˦˧,Rising-Falling
+↓,Downstep,↗,Global Rise
+↑,Upstep,↘,Global Fall

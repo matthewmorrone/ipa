@@ -1,0 +1,12 @@
+ ̊,Voiceless, ̤,Breathy Voiced, ̪,Dental
+ ̬,Voiced, ̰,Creaky Voiced, ̺,Apical
+ʰ,Aspirated, ̼,Linguolabial, ̻,Laminal
+ ̹,More Rounded,ʷ,Labialised, ̃,Nasalised
+ ̜,Less rounded,ʲ,Palatalised,ⁿ,Nasal Release
+ ̟,Advanced,ˠ,Velarised,ˡ,Lateral Release
+ ̠,Retracted,ˤ,Pharyngealised, ̚,No Audible Release
+ ̈,Centralised, ̴,Velarised or Pharyngealised, ,
+ ̽,Mid-Centralised, ̝,Raised, ,
+ ̩,Syllabic, ̞,Lowered, ,
+ ̯,Non-Syllabic, ̘,Advanced Tongue Root, ,
+˞,Rhoticity, ̙,Retracted Tongue Root, ,

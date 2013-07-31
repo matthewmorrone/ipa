@@ -1,0 +1,323 @@
+<html>
+<head>
+<script src='jquery.js'></script>
+<style>
+table, th, td
+{
+	border: 1px solid black;
+	border-collapse: collapse; 
+	font-family: Calibri, sans-serif;
+}
+td
+{
+	height: 20px;
+	width: 20px; 
+	text-align: center;
+}
+</style>
+</head>
+
+<body>
+<script>
+$(function()
+{
+	$("table tr:eq(0) th").each(function()
+	{
+		$(this).css({
+			"-webkit-transform": "rotate(270deg) translate(-30px,40px)",
+			"writing-mode": "tb-rl",
+			"white-space":"nowrap"
+		})
+		$(this).children("div").css({
+			"height":"100",
+			"width":"20"
+		})
+	})
+})
+
+</script>
+<table>
+<tr>
+<th></th>
+<th colspan=2><div>Bilabial</div></th>
+<th colspan=2><div>Labiodental</div></th>
+<th colspan=2><div>Dental</div></th>
+<th colspan=2><div>Alveolar</div></th>
+<th colspan=2><div>Postalveolar</div></th>
+<th colspan=2><div>Retroflex</div></th>
+<th colspan=2><div>Palatal</div></th>
+<th colspan=2><div>Velar</div></th>
+<th colspan=2><div>Uvular</div></th>
+<th colspan=2><div>Pharyngeal</div></th>
+<th colspan=2><div>Epiglottal</div></th>
+<th colspan=2><div>Glottal</div></th>
+</tr>
+<tr>
+<th>Unaspirated Plosive</th>
+<td title="Voiceless Bilabial Plosive (101)">p</td>
+<td title="Voiced Bilabial Plosive (102)">b</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td title="Voiceless Alveolar Plosive (103)">t</td>
+<td title="Voiced Alveolar Plosive (104)">d</td>
+<td></td>
+<td></td>
+<td title="Voiceless Retroflex Plosive (105)">&#648;</td>
+<td title="Voiced Retroflex Plosive (106)">&#598;</td>
+<td title="Voiceless Palatal Plosive (107)">c</td>
+<td title="Voiced Palatal Plosive (108)">&#607;</td>
+<td title="Voiceless Velar Plosive (109)">k</td>
+<td title="Voiced Velar Plosive (110)">&#609;</td>
+<td title="Voiceless Uvular Plosive (111)">q</td>
+<td title="Voiced Uvular Plosive (112)">&#610;</td>
+<td></td>
+<td></td>
+<td title="Epiglottal Plosive (173)">&#673;</td>
+<td></td>
+<td title="Glottal Stop (113)">&#660;</td>
+<td></td>
+</tr>
+<tr>
+<th>Nasal</th>
+<td></td>
+<td title="Bilabial Nasal (114)">m</td>
+<td></td>
+<td title="Labiodental Nasal (115)">&#625;</td>
+<td></td>
+<td></td>
+<td></td>
+<td title="Alveolar Nasal (116)">n</td>
+<td></td>
+<td></td>
+<td></td>
+<td title="Retroflex Nasal (117)">&#627;</td>
+<td></td>
+<td title="Palatal Nasal (118)">&#626;</td>
+<td></td>
+<td title="Velar Nasal (119)">&#331;</td>
+<td></td>
+<td title="Uvular Nasal (120)">&#628;</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<th>Trill</th>
+<td></td>
+<td title="Bilabial Trill (121)">&#665;</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td title="Alveolar Trill (122)">r</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td title="Uvular Trill (123)">&#640;</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<th>Flap or Tap</th>
+<td></td>
+<td></td>
+<td></td>
+<td title="Labiodental Flap (184)">&#11377;</td>
+<td></td>
+<td></td>
+<td></td>
+<td title="Alveolar Tap (124)">&#638;</td>
+<td></td>
+<td></td>
+<td></td>
+<td title="Retroflex Flap (125)">&#637;</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td title="Epiglottal Flap (173+432)">&#673;&#815;</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<th>Fricative</th>
+<td title="Voiceless Bilabial Fricative (126)">&#632;</td>
+<td title="Voiced Bilabial Fricative (127)">&#946;</td>
+<td title="Voiceless Labiodental Fricative (128)"'>f</td>
+<td title="Voiced Labiodental Fricative (129)">v</td>
+<td title="Voiceless Dental Fricative (130)">&#952;</td>
+<td title="Voiced Dental Fricative (131)">&eth;</td>
+<td title="Voiceless Alveolar Sibilant (132)">s</td>
+<td title="Voiced Alveolar Sibilant (133)">z</td>
+<td title="Voiceless Palato-alveolar Sibilant (134)"'>&#643;</td>
+<td title="Voiced Palato-alveolar Sibilant (135)"'>&#658;</td>
+<td title="Voiceless Retroflex Sibilant (136)">&#642;</td>
+<td title="Voiced Retroflex Sibilant (137)">&#656;</td>
+<td title="Voiceless Palatal Fricative (138)">ç</td>
+<td title="Voiced Palatal Fricative (139)">&#669;</td>
+<td title="Voiceless Velar Fricative (140)">x</td>
+<td title="Voiced Velar Fricative (141)">&#611;</td>
+<td title="Voiceless Uvular Fricative (142)">&#967;</td>
+<td title="Voiced Uvular Fricative (143)">&#641;</td>
+<td title="Voiceless Pharyngeal Fricative (144)">&#295;</td>
+<td title="Voiced Pharyngeal Fricative (145)">&#661;</td>
+<td title="Voiceless Epiglottal Fricative (172)">&#668;</td>
+<td title="Voiced Epiglottal Fricative (174)">&#674;</td>
+<td title="Voiceless Glottal Fricative (146)">h</td>
+<td title="Voiced Glottal Fricative (147)">&#614;</td>
+</tr>
+<tr>
+<th>Lateral Fricative</th>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td title="Voiceless Alveolar Lateral Fricative (148)"'>&#620;</td>
+<td title="Voiced Alveolar Lateral Fricative (149)"'>&#622;</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<th>Approximant</th>
+<td></td>
+<td></td>
+<td></td>
+<td title="Labiodental Approximant (150)">&#651;</td>
+<td></td>
+<td></td>
+<td></td>
+<td title="Alveolar Approximant (151)">&#633;</td>
+<td></td>
+<td></td>
+<td></td>
+<td title="Retroflex Approximant (152)">&#635;</td>
+<td></td>
+<td title="Palatal Approximant (153)">j</td>
+<td></td>
+<td title="Velar Approximant (154)">&#624;</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<th>Lateral Approximant</th>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td title="Alveolar Lateral Approximant (155)">l</td>
+<td></td>
+<td></td>
+<td></td>
+<td title="Retroflex Lateral Approximant (156)">&#621;</td>
+<td></td>
+<td title="Palatal Lateral Approximant (157)">&#654;</td>
+<td></td>
+<td title="Velar Lateral Approximant (158)">&#671;</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<th>Lateral Flap</th>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td title="Alveolar Lateral Flap (181)">&#634;</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</table>
+<table>
+<tr>
+<th>Voiceless</th>
+<th>Voiced</th>
+</tr>
+</table>
+
+
+
+
+<!-- 
+<table>
+<tr><th></th><th colspan=2><div>Front</div></th><th colspan=2><div>Near-Front</div></th><th colspan=2><div>Central</div></th><th colspan=2><div>Near-Back</div></th><th colspan=2><div>Back</div></th></tr>
+<tr><th>Close</th><td>i</td><td>y</td><td></td><td></td><td>ɨ</td><td>ʉ</td><td></td><td></td><td>ɯ</td><td>u</td></tr>
+<tr><th>Near-Close</th><td></td><td></td><td>ɪ</td><td>ʏ</td><td>ɪ̈</td><td>ʊ̈</td><td></td><td>ʊ</td><td></td><td></td></tr>
+<tr><th>Close-Mid</th><td>e</td><td>ø</td><td></td><td></td><td>ɘ</td><td>ɵ</td><td></td><td></td><td>ɤ</td><td>o</td></tr>
+<tr><th>Mid</th><td>e̞</td><td>ø̞</td><td></td><td></td><td>ə</td><td></td><td></td><td></td><td>ɤ̞</td><td>o̞</td></tr>
+<tr><th>Open-Mid</th><td>ɛ</td><td>œ</td><td></td><td></td><td>ɜ</td><td>ɞ</td><td></td><td></td><td>ʌ</td><td>ɔ</td></tr>
+<tr><th>Near-Open</th><td>æ</td><td></td><td></td><td></td><td>ɐ</td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><th>Open</th><td>a</td><td>ɶ</td><td></td><td></td><td>ä</td><td></td><td></td><td></td><td>ɑ</td><td>ɒ</td></tr>
+</table>
+ -->
+
+</body>
+</html>

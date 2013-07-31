@@ -1,0 +1,9 @@
+ˈ,Primary Stress
+ˌ,Secondary Stress
+ː,Long
+ˑ,Half-Long
+̆,Extra-Short
+.,Syllable Break
+|,Minor (foot) Group
+||,Major (intonation) Group
+ ͜ ,Linking (absence of a break)
