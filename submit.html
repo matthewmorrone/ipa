@@ -2,12 +2,10 @@
 	<head>
 		<meta charset=utf-8></meta>
 		<title>An Interactive IPA Chart</title>
-		<link rel="shortcut icon" type="image/x-icon" href="psi.png"></link>
-		<script src="jquery.js"></script>
-		<script src="zclip.js"></script>
+		<link href="/psi.ico" rel="shortcut icon" type="image/x-icon">
+		<script src="/jquery.js"></script>
 		<style>
-		*
-		{
+		* {
 			list-style-type: none;
 			margin: 0;
 			padding: 0;
@@ -25,71 +23,57 @@
 			font-family: Calibri, sans-serif;
 			-webkit-appearance: none;
 		}
-		body 
-		{
+		body  {
 			width: 100%; 
 			height: 100%;
 		}
-		.play 
-		{
+		.play  {
 			display: none;
 		}
-		table
-		{
+		table {
 			margin: 0 20 0 0; 
 		}
-		table, th, td, textarea	
-		{
+		table, th, td, textarea	 {
 			border: 1px solid black; 
 			border-collapse: collapse;
 		}
-		select option:selected
-		{
+		select option:selected {
 			font-size: 200%; 
 		}
-		.side, .side div, .side div a
-		{
+		.side, .side div, .side div a {
 			text-align: right; 
 			
 		}
-		.half
-		{
+		.half {
 			float: left; 
 		}
-		.sub
-		{
+		.sub {
 			float: right; 
 		}
-		td
-		{
+		td {
 			text-align: center; 
 			height: 25px;
 			width: 25px;
 		}	
-		nav
-		{
+		nav {
 			width: 10%; 
 			margin: auto; 
 		}	
-		textarea
-		{
+		textarea {
 			margin: auto;
 			width: 100%; 
 			clear: both;
 			font-size: 30; 
 		}
-		li
-		{
+		li {
 			display: inline; 
 		}
-		#footer 
-		{
+		#footer  {
 			clear: both; 
 			width: 100%;
 			text-align: center;
 		}
-		.link
-		{
+		.link {
 			color: blue;
 			text-decoration: underline; 
 		}
@@ -101,34 +85,28 @@
 	function chomp(input, offset){return input.substring(0, input.length-offset)}
 	function capital(string){return string.charAt(0).toUpperCase() + string.slice(1);}
 	
-	function center()
-	{
+	function center() {
 		var z = ($(document).width()-($(".half").eq(0).width()+$(".half").eq(1).width()))/2
 		$("section").css({"margin-left": z, "margin-right": z})
 	}
-	function footer()
-	{
+	function footer() {
 		var y = $(document).height()+($("#footer").height()-$(document).height())
 		$("#footer").css("padding-top", y)
 	}
-	function ipa()
-	{
-		$("#consonants tr:eq(0) th, #vowels tr:eq(0) th").each(function()
-		{
+	function ipa() {
+		$("#consonants tr:eq(0) th, #vowels tr:eq(0) th").each(function() {
 			$(this).css({"-webkit-transform": "rotate(270deg) translate(-25px,40px)", "white-space":"nowrap"})
 			$(this).children("div").css({"height":"100", "width":"25"})
 		})
 		center()
 		footer()
-		$("th").each(function()
-		{		
+		$("th").each(function() {		
 			var a = $(this).find("a").html()
 			var div = $(this).find("div")
 			$(this).html(div)
 			div.html(a)
 		})
-		$("td").each(function()
-		{
+		$("td").each(function() {
 			var letter = $(this).find("a").html() || ""
 			var number = $(this).attr("number") || ""
 			$(this).html("<input name='letters[]' type='checkbox' name='letter[]' value='"+letter+", "+number+"'>"+letter+"</input>")
@@ -141,24 +119,20 @@
 		
 		
 		$(".rotate").toggle(
-			function() 
-			{
+			function()  {
 				var ri = $(this)[0].cellIndex
 				$(this).find("div").css("color", "lightgray")
-				$(this).parent().parent().parent().find("tr:not(:first)").each(function() 
-				{
+				$(this).parent().parent().parent().find("tr:not(:first)").each(function()  {
 					$(this).children().eq(ri*2).css("color", "lightgray")
 					$(this).children().eq(ri*2-1).css("color", "lightgray")
 					$(this).children().eq(ri*2).find("input").attr("checked", false)
 					$(this).children().eq(ri*2-1).find("input").attr("checked", false)
 				})
 			},
-			function() 
-			{
+			function()  {
 				var ri = $(this)[0].cellIndex
 				$(this).find("div").css("color", "black")
-				$(this).parent().parent().parent().find("tr:not(:first)").each(function() 
-				{
+				$(this).parent().parent().parent().find("tr:not(:first)").each(function()  {
 					$(this).children().eq(ri*2).css("color", "black")
 					$(this).children().eq(ri*2-1).css("color", "black")
 					$(this).children().eq(ri*2).find("input").attr("checked", true)
@@ -171,20 +145,16 @@
 			function() {$(this).find("a").css("color", "black"); $(this).parent().find("td a").each(function() {$(this).css({"display":"block", "text-align":"center"})})}
 		)
 	}
-	$(function()
-	{
+	$(function() {
 		$.post("ipa.php",{"mode":"2", "filename":"All"},
-		function(data)
-		{
+		function(data) {
 			$("section").html(data)
 			ipa()
 			$(".sub").remove()
 		})
-		$("button").click(function()
-		{
+		$("button").click(function() {
 			var name = prompt("Language Name", "");
-			if (name != null && name != "")
-			{
+			if (name != null && name != "") {
 				$.ajax({
 					type: "POST",
 					url: "ipa.php",

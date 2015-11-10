@@ -2,431 +2,20 @@
 	<head>
 		<meta charset=utf-8></meta>
 		<title>An Interactive IPA Chart</title>
-		<link rel="shortcut icon" type="image/x-icon" href="psi.png"></link>
+		<link href="/psi.ico" rel="shortcut icon" type="image/x-icon">
+		<!-- <link href="/reset.css" rel="stylesheet" type="text/css"> -->
+		<link href="ipa.css" rel="stylesheet" type="text/css">
 		<script src="jquery.js"></script>
-		<script src="zclip.js"></script>
-		<style>
-		*
-		{
-			list-style-type: none;
-			margin: 0;
-			padding: 0;
-			border-collapse: collapse;
-			border-spacing: 0;
-			border: 0;
-			font-style: normal;
-			font-weight: normal;
-			list-style: none;
-			text-align: left;
-			font-size: 100%;
-			font-weight: normal;
-			text-decoration: none;
-			color: black;
-			font-family: Calibri, sans-serif;
-			-webkit-appearance: none;
-		}
-		body
-		{
-			width: 100%;
-			height: 100%;
-		}
-		.play
-		{
-			display: none;
-		}
-/*
-		table
-		{
-			margin: 0 20 0 0;
-		}
- */
-		.popup
-		{
-			overflow: hidden;
-		}
-		table, th, td, textarea
-		{
-			border: 1px solid black;
-			border-collapse: collapse;
-		}
-		select option:selected
-		{
-			font-size: 200%;
-		}
-		.side, .side div, .side div a
-		{
-			text-align: right;
-		}
-		caption
-		{
-			text-align: center;
-		}
-		.half
-		{
-			float: left;
-		}
-		.sub
-		{
-			float: right;
-		}
-		td
-		{
-			text-align: center;
-			height: 25px;
-			width: 25px;
-		}
-		#vowels
-		{
-			margin-left: 20px;
-		}
-		nav
-		{
-			width: 10%;
-			margin: auto;
-		}
-		textarea
-		{
-			margin: auto;
-			width: 100%;
-			clear: both;
-			font-size: 30;
-		}
-		ul, ul li
-		{
-			display: inline;
-		}
-		#extras
-		{
-			float: right;
-		}
-		#extras li
-		{
-			color: grey;
-		}
-		#footer
-		{
-			clear: both;
-			width: 100%;
-			text-align: center;
-		}
-		.link
-		{
-			color: blue;
-			text-decoration: underline;
-		}
-		</style>
+		<script src="ipa.js"></script>
+		<script src="ipa.popup.js"></script>
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
 	</head>
 	<body>
 	<nav></nav>
-	<script>
-
-	var typeswitch = true
-	var soundswitch = true
-	var linkswitch = true
-	$.fn.antiselect = function(b)
-	{
-		if (b == true)
-		{
-			$(this).css({"-webkit-touch-callout":"none", "-webkit-user-select":"none", "-khtml-user-select":"none", "-moz-user-select":"none", "-ms-user-select":"none", "user-select":"none"})
-		}
-		if (b == false)
-		{
-			$(this).css({"-webkit-touch-callout":"", "-webkit-user-select":"", "-khtml-user-select":"", "-moz-user-select":"", "-ms-user-select":"", "user-select":""})
-		}
-	}
-	function reduce(chart)
-	{
-		var rows = $('#'+chart)[0].rows.length
-		for (var i = rows - 1; i >= 2; i--)
-		{
-			var cols = $('#'+chart)[0].rows[i].cells.length-1
-			var blankcount = 0
-			for (var j = 0; j <= cols; j++) {if ($('#'+chart)[0].rows[i].cells[j].innerHTML == '') {blankcount++}}
-			if (blankcount == cols) {$('#'+chart)[0].deleteRow(i)}
-		}
-		var rows = $('#'+chart)[0].rows.length
-		var cols = $('#'+chart)[0].rows[rows-1].childNodes.length
-		var buffer = false
-		for (var i=1; i<cols; i+=2)
-		{
-			if (buffer) {i-=4; cols-=2}
-			var blankcount = 0
-			var cellcount = 0
-			for (var j=1; j<rows; j+=1)
-			{
-				if ($('#'+chart)[0].rows[j].cells[i].innerHTML == '') 	{blankcount++}
-				if ($('#'+chart)[0].rows[j].cells[i+1].innerHTML == '')  {blankcount++}
-				cellcount+=2
-			}
-			if (blankcount == cellcount)
-			{
-				clearcell(chart, 0, ((i+1)/2), false)
-				for (var m=1; m<rows; m+=1)
-				{
-					clearcell(chart, m, i, false)
-					clearcell(chart, m, i, false)
-				}
-				buffer = true
-			}
-			else {buffer = false}
-		}
-	}
-	function clearcell(chart, x, y, bool){$('#'+chart)[0].rows[x].deleteCell(y);if(bool){$('#'+chart)[0].rows[x].insertCell(y)}}
-	function chomp(input, offset){return input.substring(0, input.length-offset)}
-	function capital(string){return string.charAt(0).toUpperCase() + string.slice(1);}
-
-	function center()
-	{
-		var z = ($(document).width()-($(".half").eq(0).width()+$(".half").eq(1).width()))/2
-		$("#cv").css({"margin-left": z, "margin-right": z})
-	}
-	function footer()
-	{
-		var y = $(document).height()+($("#footer").height()-$(document).height())
-		$("#footer").css("padding-top", y)
-	}
-	function rotate(a)
-	{
-		if (a == true)
-		{
-			$("#consonants tr:eq(0) th, #vowels tr:eq(0) th").each(function()
-			{
-				$(this).css({"-webkit-transform": "rotate(270deg) translate(-25px,40px)", "-moz-transform": "rotate(270deg) translate(-25px,40px)", "white-space":"nowrap"})
-				$(this).children("div").css({"height":"100", "width":"25"})
-			})
-		}
-		if (a == false)
-		{
-			$("#consonants tr:eq(0) th, #vowels tr:eq(0) th").each(function()
-			{
-				$(this).css({"-webkit-transform": ""})
-				$(this).children("div").css({"height":"", "width":""})
-			})
-		}
-	}
-	function ipa()
-	{
-		reduce("consonants")
-		reduce("vowels")
-		$("a.sound").click(function(e)
-		{
-			if (linkswitch == true)	{return}
-			e.preventDefault()
-			if (soundswitch == true) {$(this).next('audio').get(0).play()}
-			if (typeswitch == true) {$("textarea").val($("textarea").val()+$(this).html())}
-		})
-
-		// center()
-		footer()
-		rotate(true)
-		$('#clip_button').zclip({setHandCursor: false, copy: function(){return $('textarea').val()}})
-		$(".rotate").toggle(
-			function()
-			{
-				var ri = $(this)[0].cellIndex
-				$(this).find("a").css("color", "lightgray");
-				$(this).parent().parent().parent().find("tr:not(:first)").each(function()
-				{
-					$(this).children().eq(ri*2).find("a").css("display", "none")
-					$(this).children().eq(ri*2-1).find("a").css("display", "none")
-				})
-			},
-			function()
-			{
-				var ri = $(this)[0].cellIndex
-				$(this).find("a").css("color", "black")
-				$(this).parent().parent().parent().find("tr:not(:first)").each(function()
-				{
-					$(this).children().eq(ri*2).find("a").css({"display":"block", "text-align":"center"})
-					$(this).children().eq(ri*2-1).find("a").css({"display":"block", "text-align":"center"})
-				})
-			}
-		)
-		$(".third").toggle
-		(
-			function()
-			{
-				$(this).find("a").css("color", "lightgray")
-				var ri = $(this)[0].cellIndex+1
-				var table = $(this).parents(".sub").parent().children("table").attr("id")
-
-				$("#"+table).find("tr:not(:first)").each(function()
-				{
-					$(this).find("td").each(function(i)
-					{
-						if (i%2+1 == ri)
-						{
-							$(this).find("a").css("display", "none")
-						}
-					})
-				})
-			},
-			function()
-			{
-				$(this).find("a").css("color", "black")
-				var ri = $(this)[0].cellIndex+1
-				var table = $(this).parents(".sub").parent().children("table").attr("id")
-
-				$("#"+table).find("tr:not(:first)").each(function()
-				{
-					$(this).find("td").each(function(i)
-					{
-						if (i%2+1 == ri)
-						{
-							$(this).find("a").css({"display":"block", "text-align":"center"})
-						}
-					})
-				})
-			}
-		)
-		$(".side").toggle(
-			function() {$(this).find("a").css("color", "lightgray"); $(this).parent().find("td a").each(function() {$(this).css("display", "none")})},
-			function() {$(this).find("a").css("color", "black"); $(this).parent().find("td a").each(function() {$(this).css({"display":"block", "text-align":"center"})})}
-		)
-
-		$("#select_switch").toggle(
-			function() {$(this).css("color", "lightgray"); $("th, td").antiselect(true)},
-			function() {$(this).css("color", "black"); $("th, td").antiselect(false)}
-		)
-		$("#type_switch").toggle(
-			function() {$(this).css("color", "lightgray"); typeswitch = false},
-			function() {$(this).css("color", "black"); typeswitch = true}
-		)
-		$("#sound_switch").toggle(
-			function() {$(this).css("color", "lightgray"); soundswitch = false},
-			function() {$(this).css("color", "black"); soundswitch = true}
-		)
-		$("#link_switch").toggle(
-			function() {$(this).css("color", "lightgray"); linkswitch = false},
-			function() {$(this).css("color", "black"); linkswitch = true}
-		)
-		$("#rotate_switch").toggle(
-			function() {$(this).css("color", "lightgray"); rotate(false)},
-			function() {$(this).css("color", "black"); rotate(true)}
-		)
-		$("#clear_switch").click(function() {$("textarea").val("")})
-	}
-	$(function()
-	{
-
-		$("#extras").find("li").toggle(function()
-		{
-			table = $(this).html()
-			$(this).css("color", "black")
-			$("#"+table).remove()
-			popup = $("#extras").append("<div class='popup' id='"+table+"'></div>")
-
-			$("#"+table).css(
-			{
-				"position":"fixed",
-				"left":"150px",
-				"top":"150px",
-				"width":"320px",
-				"height":"340px",
-				"z-index":"5",
-				"background-color":"white"
-			})
-			$("#"+table).append("<div class='popupsize'></div>")
-			$("#"+table).find(".popupsize").css({"height":20, "width":20, "position":"absolute", "right":0, "bottom":0, "border":"1px solid black"})
-			function adjustpopup()
-			{
-				$(".popup").each(function()
-				{
-					$(this).width($(this).children("table").width()+2)
-					$(this).height($(this).children("table").height()+2)
-				})
-
-			}
-
-			$.post("ipa.php", {"mode":4, "table":table}, function(data)
-			{
-				$("#"+table).append(data)
-				adjustpopup()
-				$(".clickah").click(function()
-				{
-					$("textarea").val($("textarea").val()+$(this).html())
-				})
-			},
-			'text')
-
-
-
-			popupsize = false
-			$("#"+table).mousedown(function(e)
-			{
-				if (popupsize == true) {return}
-				e.originalEvent.preventDefault()
-				pressed = true
-				popup = $(this)
-				startX = $(this).left()
-				startY = $(this).top()
-				moveX = e.pageX
-				moveY = e.pageY
-				$(document).mousemove(function(e)
-				{
-					if (pressed == true)
-					{
-						popup.css({
-							"left": (e.pageX-startX),
-							"top":  (e.pageY-startY)
-						})
-					}
-				})
-				$(document).mouseup(function(e) {pressed = false; $(".popup").css("cursor", ""); $(document).unbind("mousemove").unbind("mouseup")})
-			})
-
-			$("#"+table).find(".popupsize").mousedown(function(e)
-			{
-				popupsize = true
-				e.originalEvent.preventDefault()
-				pressed = true
-				popup = $(this).parent()
-				startX = $(this).parent().width()
-				startY = $(this).parent().height()
-				moveX = e.pageX
-				moveY = e.pageY
-				$(document).mousemove(function(e)
-				{
-					if(pressed)
-					{
-						popup.width(e.pageX-moveX+startX)
-						popup.height(e.pageY-moveY+startY)
-						popup.children("table").width(e.pageX-moveX+startX)
-						popup.children("table").height(e.pageY-moveY+startY)
-					}
-				})
-				$(document).mouseup(function() {pressed = false; popupsize = false; $(document).unbind("mousemove").unbind("mouseup")})
-			})
-		}, function(){$("#"+table).remove(); $(this).css("color", "grey")})
-
-		$.post("ipa.php",{"mode":"1"},
-		function(data)
-		{
-			$("nav").html(data)
-			$("#language").change(function()
-			{
-				filename = $(this).val()
-
-				$.post("ipa.php",{"mode":"2", "filename":filename},
-				function(data)
-				{
-					filename.indexOf(".") > -1 ? displayname = capital(chomp(filename, 4)) : displayname = filename
-					$("title").html(displayname + " | An Interactive IPA Chart")
-					$("#cv").html(data)
-					ipa()
-					$("#select_switch").click()
-					$("#link_switch").click()
-				})
-			})
-			$("#language").trigger("change")
-		})
-	})
-	</script>
-	<section id="cv"></section>
+	<div id="cv"></div>
 	<div>
-		<textarea id='clip_text'></textarea>
+		<textarea></textarea>
 		<ul id='options'>
-			<li id="clip_button">Copy</li>
 			<li id="sound_switch">Sound</li>
 			<li id="type_switch">Type</li>
 			<li id="link_switch">Link</li>
@@ -435,34 +24,30 @@
 			<li id="clear_switch">Clear</li>
 		</ul>
 		<ul id='extras'>
-			<li>Coarticulations</li>
-			<li>Diacritics</li>
-			<li>Suprasegmentals</li>
-			<li>Tones</li>
+			<li class='off'>Coarticulations</li>
+			<li class='off'>Diacritics</li>
+			<li class='off'>Suprasegmentals</li>
+			<li class='off'>Tones</li>
 		</ul>
 	</div>
-
 	<div id="footer">
-		<a href='http://homes.chass.utoronto.ca/~danhall/phonetics/sammy.html' target='_blank' class='link'>Sagittal Sections</a><br />
+		<a href='http://smu-facweb.smu.ca/~s0949176/sammy/' target='_blank' class='link'>Sagittal Sections</a><br />
 		Feel free to <a href='submit.html' class='link'>submit a language</a> for addition to the chart.<br />
+		Open sourced on <a href="http://www.github.com/matthewmorrone1/ipa-chart" class='link'>Github</a><br />
 		Make sure your browser is set to standard <a href='http://www.unc.edu/~jlsmith/ipa-fonts.html' target='_blank' class='link'>Unicode</a> fonts in order for the page to properly render.<br />
 		Not configured for Internet Explorer. Designed in <a href='https://www.google.com/intl/en/chrome/browser/' target='_blank' class='link'>Google Chrome</a>.<br />
-		Please contact me with any question, suggestions for features, errors encountered or language requests.<br />
-		©2012 Matthew Morrone <a href="mailto:mam315@pitt.edu" class='link'>mam315@pitt.edu</a>
+		Please contact me with any questions, suggestions for features, errors encountered or language requests.<br />
+		©2015 Matthew Morrone <a href="mailto:mam315@pitt.edu" class='link'>matthewmorrone1@gmail.com</a>
 	</div>
-<!-- <h3>IPA</h3> -->
-<!-- <p>WARNING: THIS MAKES SOUNDS<br>In my first linguistics class and in a phonetics class, we learned to use the <a href='http://en.wikipedia.org/wiki/International_Phonetic_Alphabet'>International Phonetic Alphabet</a>. This was quite the challenge for not only me but others as well, as most of the resources and information that exists online is sparse, scattered and poorly organized. Typing the exotic symbols is on one site, information on two or three different sites, specific language information on another, and the sounds themselves are on Wikipedia, but confined to the individual sound pages. This application serves to gather all of these resources into a single place and present them in a straightforward manner. Though I no longer need it, other linguistics students have told me that it makes their lives much easier.</p> -->
-
-<script>
-  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-
-  ga('create', 'UA-42927190-1', 'apexmentis.com');
-  ga('send', 'pageview');
-
-</script>
+	<!-- <h3>IPA</h3> -->
+	<!-- <p>WARNING: THIS MAKES SOUNDS<br>In my first linguistics class and in a phonetics class, we learned to use the <a href='http://en.wikipedia.org/wiki/International_Phonetic_Alphabet'>International Phonetic Alphabet</a>. This was quite the challenge for not only me but others as well, as most of the resources and information that exists online is sparse, scattered and poorly organized. Typing the exotic symbols is on one site, information on two or three different sites, specific language information on another, and the sounds themselves are on Wikipedia, but confined to the individual sound pages. This application serves to gather all of these resources into a single place and present them in a straightforward manner. Though I no longer need it, other linguistics students have told me that it makes their lives much easier.</p> -->
+	<script>
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+	ga('create', 'UA-42927190-1', 'apexmentis.com');
+	ga('send', 'pageview');
+	</script>
 	</body>
 </html>
-

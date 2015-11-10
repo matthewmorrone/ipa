@@ -1,0 +1,108 @@
+@font-face {
+	font-family: "Raleway";
+	font-style: normal;
+	font-weight: 200px;
+	src: local("Raleway"), url(http://themes.googleusercontent.com/static/fonts/raleway/v6/cIFy4yrWPDz3zOxk7hIQLUuEpTyoUstqEm5AMlJo4.woff) format("woff");
+}
+@font-face {
+	font-family: "Open Sans";
+	font-style: normal;
+	font-weight: 200px;
+	src: local("Open Sans"), local("OpenSans"), url(http://themes.googleusercontent.com/static/fonts/opensans/v6/cJZKeOuBrn4kERxqtaUH3bO3LdcAZYWl9Si6vvxL-qU.woff) format("woff");
+}
+* {
+	margin: 0px;
+	padding: 0px;
+}
+body {
+	width: 80%;
+	height: 100%;
+	margin: auto;
+	font-family: "Open Sans";
+}
+a {
+	color: black;
+	text-decoration: none;
+}
+header, header h1, footer {
+	font-family: "Raleway";
+}
+table, th, td {
+	border: 1px solid black;
+	border-collapse: collapse;
+}
+td {
+	text-align: center;
+	height: 25px;
+	width: 25px;
+}
+#cv {
+	margin: auto;
+}
+.play {
+	display: none;
+}
+.on {
+	color: black;
+}
+.off {
+	color: lightgray;
+}
+.sound {
+	font-family: arial;
+}
+.popup {
+	overflow: hidden;
+}
+select option:selected {
+	font-size: 200%;
+}
+.side, .side div, .side div a {
+	text-align: right;
+}
+caption {
+	text-align: center;
+}
+.half {
+	float: left;
+	margin-left: 20px;
+	margin-bottom: 20px;
+}
+.sub {
+	float: right;
+}
+.half td a {
+	text-align: center;
+}
+nav {
+	width: 10%;
+	margin: auto;
+}
+#language {
+	font-size: 150%;
+	margin: 20px;
+}
+textarea {
+	width: 100%;
+	clear: both;
+	font-size: 30px;
+	margin-top: 30px;
+}
+ul {
+	float: left;
+}
+li {
+	display: inline;
+}
+#extras {
+	float: right;
+}
+#footer {
+	clear: both;
+	width: 100%;
+	text-align: center;
+}
+.link {
+	color: blue;
+	text-decoration: underline;
+}
