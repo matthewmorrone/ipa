@@ -1,21 +1,416 @@
 <html>
-	<head>
-		<meta charset=utf-8></meta>
-		<title>An Interactive IPA Chart</title>
-		<link href="/psi.ico" rel="shortcut icon" type="image/x-icon">
-		<!-- <link href="/reset.css" rel="stylesheet" type="text/css"> -->
-		<link href="ipa.css" rel="stylesheet" type="text/css">
-		<script src="jquery.js"></script>
-		<script src="ipa.js"></script>
-		<script src="ipa.popup.js"></script>
-		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
-	</head>
-	<body>
-	<nav></nav>
-	<div id="cv"></div>
-	<div>
-		<textarea></textarea>
+<head>
+<meta charset=utf-8></meta>
+<title>An Interactive IPA Chart</title>
+<link href="/psi.ico" rel="shortcut icon" type="image/x-icon">
+<!-- <link href="/reset.css" rel="stylesheet" type="text/css"> -->
+<link href="ipa.css" rel="stylesheet" type="text/css">
+<style>
+@font-face {
+	font-family: "Raleway";
+	font-style: normal;
+	font-weight: 200px;
+	src: local("Raleway"), url(http://themes.googleusercontent.com/static/fonts/raleway/v6/cIFy4yrWPDz3zOxk7hIQLUuEpTyoUstqEm5AMlJo4.woff) format("woff");
+}
+@font-face {
+	font-family: "Open Sans";
+	font-style: normal;
+	font-weight: 200px;
+	src: local("Open Sans"), local("OpenSans"), url(http://themes.googleusercontent.com/static/fonts/opensans/v6/cJZKeOuBrn4kERxqtaUH3bO3LdcAZYWl9Si6vvxL-qU.woff) format("woff");
+}
+* {
+	margin: 0px;
+	padding: 0px;
+}
+body {
+	width: 75%;
+	height: 100%;
+	margin: auto;
+	font-family: "Open Sans";
+}
+a {
+	color: black;
+	text-decoration: none;
+}
+header, header h1, footer {
+	font-family: "Raleway";
+}
+table, th, td {
+	border: 1px solid black;
+	border-collapse: collapse;
+}
+th, td {
+	text-align: center;
+	min-height: 25px;
+	min-width: 25px;
+}
+.play {
+	display: none;
+}
+.on {
+	color: black;
+}
+.off {
+	color: lightgray;
+}
+.sound {
+	font-family: arial;
+}
+.popup {
+	overflow: hidden;
+}
+select option:selected {
+	font-size: 200%;
+}
+.side, .side div, .side div a {
+	text-align: right;
+}
+caption {
+	text-align: center;
+}
+.sub {
+	float: right;
+}
+.half td a {
+	text-align: center;
+}
+nav {
+	width: 10%;
+	margin: auto;
+}
+#cv, #type, #menu {
+	display: flex;
+	flex-flow: row nowrap;
+}
+.flex {
+	flex-grow: 2;
+}
+#language {
+	font-size: 150%;
+	margin: 20px;
+}
+#scratch {
+	width: 100%;
+	clear: both;
+	font-size: 30px;
+	margin-top: 30px;
+}
+li {
+	list-style-type: none;
+	display: inline;
+}
+#footer {
+	clear: both;
+	width: 100%;
+	text-align: center;
+}
+.link {
+	color: blue;
+}
+.popup table {
+	width: 100%;
+	height: 100%;
+}
+.rotate, .rotate * {
+	background: none;
+}
+</style>
+<script src="jquery.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
+<script>
+var log = console.log.bind(console)
+  , selectswitch = false
+  , typeswitch = true
+  , soundswitch = true
+  , linkswitch = true
+  , rotateswitch = true
+$.fn.antiselect = function(b) {
+	if (b === true) {
+		$(this).css({"-webkit-touch-callout": "none", "-webkit-user-select": "none", "-khtml-user-select": "none", "-moz-user-select": "none", "-ms-user-select": "none", "user-select": "none"})
+	}
+	if (b === false) {
+		$(this).css({"-webkit-touch-callout": "", "-webkit-user-select": "", "-khtml-user-select": "", "-moz-user-select": "", "-ms-user-select": "", "user-select": ""})
+	}
+}
+function reduce(chart) {
+	var rows, cols, i, j, blankcount, buffer, cellcount, m
+	var rows = $('#'+chart)[0].rows.length
+	for (i = rows - 1; i >= 2; i--) {
+		cols = $('#'+chart)[0].rows[i].cells.length-1
+		blankcount = 0
+		for (j = 0; j <= cols; j++) {
+			if ($('#'+chart)[0].rows[i].cells[j].innerHTML === '') {
+				blankcount++
+			}
+		}
+		if (blankcount === cols) {
+			$('#'+chart)[0].deleteRow(i)
+		}
+	}
+	rows = $('#'+chart)[0].rows.length
+	cols = $('#'+chart)[0].rows[rows-1].childNodes.length
+	buffer = false
+	for (i = 1; i < cols; i += 2) {
+		if (buffer) {
+			i -= 4;
+			cols -= 2
+		}
+		blankcount = 0
+		cellcount = 0
+		for (j = 1; j < rows; j += 1) {
+			if ($('#'+chart)[0].rows[j].cells[i].innerHTML === '') 	{
+				blankcount++
+			}
+			if ($('#'+chart)[0].rows[j].cells[i+1].innerHTML === '') {
+				blankcount++
+			}
+			cellcount += 2
+		}
+		if (blankcount === cellcount) {
+			clearcell(chart, 0, ((i + 1) / 2), false)
+			for (m = 1; m < rows; m += 1) {
+				clearcell(chart, m, i, false)
+				clearcell(chart, m, i, false)
+			}
+			buffer = true
+		}
+		else {
+			buffer = false
+		}
+	}
+
+}
+function clearcell(chart, x, y, bool) {
+	$('#'+chart)[0].rows[x].deleteCell(y);
+	if(bool) {
+		$('#'+chart)[0].rows[x].insertCell(y)
+	}
+}
+function chomp(input, offset) {
+	return input.substring(0, input.length - offset)
+}
+function capital(string) {
+	return string.charAt(0).toUpperCase() + string.slice(1);
+}
+function footer() {
+	var y = $(document).height() + ($("#footer").height()-$(document).height())
+	$("#footer").css("padding-top", y/2-20)
+}
+function rotate(a) {
+	if (a === true) {
+		$("#consonants tr:eq(0) th, #vowels tr:eq(0) th").each(function() {
+			$(this).css({"-webkit-transform": "rotate(270deg) translate(-25px,40px)", "-moz-transform": "rotate(270deg) translate(-25px,40px)", "white-space": "nowrap"})
+			$(this).children("div").css({"height": "100", "width": "25"})
+		})
+	}
+	if (a === false) {
+		$("#consonants tr:eq(0) th, #vowels tr:eq(0) th").each(function() {
+			$(this).css({"-webkit-transform": ""})
+			$(this).children("div").css({"height": "", "width": ""})
+		})
+	}
+}
+function ipa() {
+
+	// $('#cv').slideUp(1000)
+	reduce("consonants")
+	reduce("vowels")
+	// $('#cv').slideDown(1000)
+
+	$("a.sound").click(function(e) {
+		if (linkswitch === true) {
+			return
+		}
+		e.preventDefault()
+		if (soundswitch === true) {
+			$(this).next('audio').get(0).play()
+		}
+		if (typeswitch === true) {
+			$("#scratch").val($("#scratch").val() + $(this).html())
+			$('#scratch').focus()
+		}
+	})
+
+	var ri, table
+	footer()
+	rotate(true)
+
+	$(".rotate").click(function(e) {
+		ri = $(this)[0].cellIndex
+		if (linkswitch === false) {
+			e.preventDefault()
+			$(this).find("a").toggleClass("off")
+			$(this).parent().parent().parent().find("tr:not(:first)").each(function() {
+				$(this).children().eq(ri*2).find("a").toggle()
+				$(this).children().eq(ri*2-1).find("a").toggle()
+			})
+		}
+
+
+	})
+
+	$(".third").click(function(e) {
+		$(this).find("a").toggleClass("off")
+		ri = $(this)[0].cellIndex+1
+		table = $(this).parents(".sub").parent().children("table").attr("id")
+		$("#"+table).find("tr:not(:first)").each(function() {
+			$(this).find("td").each(function(i) {
+				if (i % 2 + 1 === ri) {
+					$(this).find("a").toggle()
+				}
+			})
+		})
+	})
+
+	$(".side").click(function(e) {
+		if (linkswitch === false) {
+			e.preventDefault()
+
+			$(this).find("a").toggleClass("off");
+			$(this).parent().find("td a").each(function() {
+				$(this).toggle()
+			})
+		}
+	})
+	$("#menu").antiselect(true)
+	$("#select_switch").click(function() {
+		$(this).toggleClass("off");
+		selectswitch = !selectswitch
+		$("th, td").antiselect(selectswitch)
+	})
+	$("#type_switch").click(function() {
+		$(this).toggleClass("off");
+		typeswitch = !typeswitch
+	})
+	$("#sound_switch").click(function() {
+		$(this).toggleClass("off");
+		soundswitch = !soundswitch
+	})
+	$("#link_switch").click(function() {
+		$(this).toggleClass("off");
+		linkswitch = !linkswitch
+	})
+	$("#rotate_switch").click(function() {
+		$(this).toggleClass('off')
+		rotateswitch = !rotateswitch
+		rotate(rotateswitch)
+	})
+	$("#clear_switch").click(function() {
+		$("#scratch").val("")
+		$("#scratch").focus()
+	})
+
+
+
+	$('#copy_switch').mousedown(function() {
+		$(this).addClass('off')
+	}).mouseup(function() {
+		$(this).removeClass('off')
+	}).mouseout(function() {
+		$(this).removeClass('off')
+	})
+	$('#copy_switch').click(function() {
+		$('#scratch').select()
+		document.execCommand('copy')
+	})
+}
+function render() {
+	var filename, displayname
+	$.post("ipa.php", {"mode": "1"},
+	function(data) {
+		$("nav").html(data)
+		$("#language").change(function() {
+			filename = $(this).val()
+			$.post("ipa.php", {"mode": "2", "filename": filename},
+			function(data) {
+				filename.indexOf(".") > -1 ? displayname = capital(chomp(filename, 4)) : displayname = filename
+				$("title").html(displayname + " | An Interactive IPA Chart")
+				$("#cv").empty()
+				$("#cv").append($(data))
+				$('.half:eq(0)').before($('<div></div>', {class: 'flex'}))
+				$('.half:eq(0)').after($('<div></div>', {class: 'flex'}))
+				$('.half:eq(1)').after($('<div></div>', {class: 'flex'}))
+				ipa()
+
+				$('#type, #menu')
+					.css('margin-left',  $('.half:eq(0)').prevAll('.flex:first').width())
+					.css('margin-right', $('.half:eq(0)').prevAll('.flex:first').width())
+
+				$("#select_switch").click()
+				$("#link_switch").click()
+				$('#scratch').focus()
+			})
+		})
+		$("#language").trigger("change")
+	})
+}
+function extras() {
+	var table, popup, popupsize, pressed, startX, startY, moveX, moveY
+	$("#extras > li").click(function() {
+		if (!$(this).hasClass("off")) {
+			$("#" + table).remove();
+			$(this).addClass("off")
+		}
+		else {
+			table = $(this).html()
+			$(this).removeClass("off")
+			$("#" + table).remove()
+			popup = $("#extras").after("<div class='popup' id='" + table + "'></div>")
+			$("#" + table).css({
+				"position": "fixed",
+				"left": ($(this).index()+1)*300+"px",
+				"top": "300px",
+				"z-index": "5",
+				"background-color": "white"
+			})
+			$.post("ipa.php", {"mode": 4, "table": table}, function(data) {
+				$("#" + table).append(data)
+				$("th.clickah").hide()
+				$(".clickah").each(function() {
+					$(this).next('td').hide()
+					$(this).attr('title', $(this).next('td').text())
+				})
+				$("td.clickah").click(function() {
+					$("#scratch").val($("#scratch").val() + $(this).html())
+					$("#scratch").focus()
+				})
+				$("#" + table).draggable({
+					handle: "th",
+					snap: true
+				}).resizable({
+					snap: true,
+					minWidth: $("#" + table).width(),
+					minHeight: $("#" + table).height(),
+					handles: "e, s, se",
+				})
+			},
+			'text')
+		}
+
+	})
+}
+
+</script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.css" />
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+</head>
+<body>
+<nav></nav>
+<main>
+	<div id='cv'>
+		<!-- <div class='flex'></div> -->
+
+	</div>
+	<div id='type'>
+		<div class='flex'></div>
+
+		<textarea id='scratch'></textarea>
+		<div class='flex'></div>
+
+	</div>
+	<div id='menu'>
 		<ul id='options'>
+			<li id="copy_switch">Copy</li>
 			<li id="sound_switch">Sound</li>
 			<li id="type_switch">Type</li>
 			<li id="link_switch">Link</li>
@@ -23,6 +418,7 @@
 			<li id="rotate_switch">Rotate</li>
 			<li id="clear_switch">Clear</li>
 		</ul>
+		<div class='flex'></div>
 		<ul id='extras'>
 			<li class='off'>Coarticulations</li>
 			<li class='off'>Diacritics</li>
@@ -30,24 +426,26 @@
 			<li class='off'>Tones</li>
 		</ul>
 	</div>
-	<div id="footer">
-		<a href='http://smu-facweb.smu.ca/~s0949176/sammy/' target='_blank' class='link'>Sagittal Sections</a><br />
-		Feel free to <a href='submit.html' class='link'>submit a language</a> for addition to the chart.<br />
-		Open sourced on <a href="http://www.github.com/matthewmorrone1/ipa-chart" class='link'>Github</a><br />
-		Make sure your browser is set to standard <a href='http://www.unc.edu/~jlsmith/ipa-fonts.html' target='_blank' class='link'>Unicode</a> fonts in order for the page to properly render.<br />
-		Not configured for Internet Explorer. Designed in <a href='https://www.google.com/intl/en/chrome/browser/' target='_blank' class='link'>Google Chrome</a>.<br />
-		Please contact me with any questions, suggestions for features, errors encountered or language requests.<br />
-		©2015 Matthew Morrone <a href="mailto:mam315@pitt.edu" class='link'>matthewmorrone1@gmail.com</a>
-	</div>
-	<!-- <h3>IPA</h3> -->
-	<!-- <p>WARNING: THIS MAKES SOUNDS<br>In my first linguistics class and in a phonetics class, we learned to use the <a href='http://en.wikipedia.org/wiki/International_Phonetic_Alphabet'>International Phonetic Alphabet</a>. This was quite the challenge for not only me but others as well, as most of the resources and information that exists online is sparse, scattered and poorly organized. Typing the exotic symbols is on one site, information on two or three different sites, specific language information on another, and the sounds themselves are on Wikipedia, but confined to the individual sound pages. This application serves to gather all of these resources into a single place and present them in a straightforward manner. Though I no longer need it, other linguistics students have told me that it makes their lives much easier.</p> -->
-	<script>
-	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-	})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-	ga('create', 'UA-42927190-1', 'apexmentis.com');
-	ga('send', 'pageview');
-	</script>
-	</body>
+</main>
+<script>
+$(function() {
+	render()
+	extras()
+
+	$("#year").text(new Date().getFullYear())
+
+})
+</script>
+<div id="footer">
+	<a href='http://smu-facweb.smu.ca/~s0949176/sammy/' target='_blank' class='link'>Sagittal Sections</a><br />
+	Feel free to <a href='submit.html' class='link'>submit a language</a> for addition to the chart.<br />
+	Open sourced on <a href="http://www.github.com/matthewmorrone1/ipa-chart" class='link'>Github</a><br />
+	Make sure your browser is set to standard <a href='http://www.unc.edu/~jlsmith/ipa-fonts.html' target='_blank' class='link'>Unicode</a> fonts in order for the page to properly render.<br />
+	Not configured for Internet Explorer. Designed in <a href='https://www.google.com/intl/en/chrome/browser/' target='_blank' class='link'>Google Chrome</a>.<br />
+	Please contact me with any questions, suggestions for features, errors encountered or language requests.<br />
+	&copy;<span id='year'></span> Matthew Morrone <a href="mailto:mam315@pitt.edu" class='link'>matthewmorrone1@gmail.com</a>
+</div>
+<!-- <h3>IPA</h3> -->
+<!-- <p>WARNING: THIS MAKES SOUNDS<br>In my first linguistics class and in a phonetics class, we learned to use the <a href='http://en.wikipedia.org/wiki/International_Phonetic_Alphabet'>International Phonetic Alphabet</a>. This was quite the challenge for not only me but others as well, as most of the resources and information that exists online is sparse, scattered and poorly organized. Typing the exotic symbols is on one site, information on two or three different sites, specific language information on another, and the sounds themselves are on Wikipedia, but confined to the individual sound pages. This application serves to gather all of these resources into a single place and present them in a straightforward manner. Though I no longer need it, other linguistics students have told me that it makes their lives much easier.</p> -->
+</body>
 </html>

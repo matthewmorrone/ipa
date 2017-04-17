@@ -1,181 +1,250 @@
 <html>
-	<head>
-		<meta charset=utf-8></meta>
-		<title>An Interactive IPA Chart</title>
-		<link href="/psi.ico" rel="shortcut icon" type="image/x-icon">
-		<script src="/jquery.js"></script>
-		<style>
-		* {
-			list-style-type: none;
-			margin: 0;
-			padding: 0;
-			border-collapse: collapse;
-			border-spacing: 0;
-			border: 0;
-			font-style: normal;
-			font-weight: normal;
-			list-style: none;
-			text-align: left;
-			font-size: 100%;
-			font-weight: normal;
-			text-decoration: none;
-			color: black;
-			font-family: Calibri, sans-serif;
-			-webkit-appearance: none;
-		}
-		body  {
-			width: 100%; 
-			height: 100%;
-		}
-		.play  {
-			display: none;
-		}
-		table {
-			margin: 0 20 0 0; 
-		}
-		table, th, td, textarea	 {
-			border: 1px solid black; 
-			border-collapse: collapse;
-		}
-		select option:selected {
-			font-size: 200%; 
-		}
-		.side, .side div, .side div a {
-			text-align: right; 
-			
-		}
-		.half {
-			float: left; 
-		}
-		.sub {
-			float: right; 
-		}
-		td {
-			text-align: center; 
-			height: 25px;
-			width: 25px;
-		}	
-		nav {
-			width: 10%; 
-			margin: auto; 
-		}	
-		textarea {
-			margin: auto;
-			width: 100%; 
-			clear: both;
-			font-size: 30; 
-		}
-		li {
-			display: inline; 
-		}
-		#footer  {
-			clear: both; 
-			width: 100%;
-			text-align: center;
-		}
-		.link {
-			color: blue;
-			text-decoration: underline; 
-		}
-		</style>
-	</head>
-	<body>
-	<button>Submit</button>
-	<script>
-	function chomp(input, offset){return input.substring(0, input.length-offset)}
-	function capital(string){return string.charAt(0).toUpperCase() + string.slice(1);}
-	
-	function center() {
-		var z = ($(document).width()-($(".half").eq(0).width()+$(".half").eq(1).width()))/2
-		$("section").css({"margin-left": z, "margin-right": z})
+<head>
+<meta charset=utf-8></meta>
+<title>Submit | An Interactive IPA Chart</title>
+<link href="/psi.ico" rel="shortcut icon" type="image/x-icon">
+<style>
+@font-face {
+	font-family: "Raleway";
+	font-style: normal;
+	font-weight: 200px;
+	src: local("Raleway"), url(http://themes.googleusercontent.com/static/fonts/raleway/v6/cIFy4yrWPDz3zOxk7hIQLUuEpTyoUstqEm5AMlJo4.woff) format("woff");
+}
+@font-face {
+	font-family: "Open Sans";
+	font-style: normal;
+	font-weight: 200px;
+	src: local("Open Sans"), local("OpenSans"), url(http://themes.googleusercontent.com/static/fonts/opensans/v6/cJZKeOuBrn4kERxqtaUH3bO3LdcAZYWl9Si6vvxL-qU.woff) format("woff");
+}
+* {
+	margin: 0px;
+	padding: 0px;
+}
+body {
+	width: 100%;
+	height: 100%;
+	margin: auto;
+	font-family: "Open Sans";
+}
+a {
+	color: black;
+	text-decoration: none;
+}
+header, header h1, footer {
+	font-family: "Raleway";
+}
+table, th, td {
+	border: 1px solid black;
+	border-collapse: collapse;
+}
+th, td {
+	text-align: center;
+	min-height: 25px;
+	min-width: 25px;
+	white-space: nowrap
+}
+.play {
+	display: none;
+}
+.on {
+	color: black;
+}
+.off {
+	color: lightgray;
+}
+.sound {
+	font-family: arial;
+}
+.popup {
+	overflow: hidden;
+}
+select option:selected {
+	font-size: 200%;
+}
+.side, .side div, .side div a {
+	text-align: right;
+}
+caption {
+	text-align: center;
+}
+.sub {
+	float: right;
+}
+.half td a {
+	text-align: center;
+}
+nav {
+	width: 10%;
+	margin: auto;
+}
+#cv, #type, #menu, nav {
+	display: flex;
+	flex-flow: row nowrap;
+}
+.flex {
+	flex-grow: 2;
+}
+#language {
+	font-size: 150%;
+	margin: 20px;
+}
+#scratch {
+	width: 100%;
+	clear: both;
+	font-size: 30px;
+	margin-top: 30px;
+}
+li {
+	list-style-type: none;
+	display: inline;
+}
+#footer {
+	clear: both;
+	width: 100%;
+	text-align: center;
+}
+.link {
+	color: blue;
+}
+button {
+	margin: auto;
+}
+[type='checkbox'] {
+	display: none;
+}
+#cv tr:first-child .rotate {
+	height: 130px;
+	width: 1px;
+}
+</style>
+<script src="jquery.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
+<script>
+</script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.css" />
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+</head>
+<body>
+<nav><input type=text id=name /><button>Submit</button></nav>
+<main>
+<form>
+<div id='cv'>
+</div>
+</form>
+</main>
+<script>
+$.fn.antiselect = function(b) {
+	if (b === true) {
+		$(this).css({"-webkit-touch-callout": "none", "-webkit-user-select": "none", "-khtml-user-select": "none", "-moz-user-select": "none", "-ms-user-select": "none", "user-select": "none"})
 	}
-	function footer() {
-		var y = $(document).height()+($("#footer").height()-$(document).height())
-		$("#footer").css("padding-top", y)
+	if (b === false) {
+		$(this).css({"-webkit-touch-callout": "", "-webkit-user-select": "", "-khtml-user-select": "", "-moz-user-select": "", "-ms-user-select": "", "user-select": ""})
 	}
-	function ipa() {
+}
+function rotate(a) {
+	if (a === true) {
 		$("#consonants tr:eq(0) th, #vowels tr:eq(0) th").each(function() {
-			$(this).css({"-webkit-transform": "rotate(270deg) translate(-25px,40px)", "white-space":"nowrap"})
-			$(this).children("div").css({"height":"100", "width":"25"})
+			$(this).css({"-webkit-transform": "rotate(270deg) translate(-38px,40px)", "-moz-transform": "rotate(270deg) translate(-38px,40px)", "white-space": "nowrap"})
+			$(this).children("div").css({"height": "100", "width": "25"})
 		})
-		center()
-		footer()
-		$("th").each(function() {		
-			var a = $(this).find("a").html()
-			var div = $(this).find("div")
-			$(this).html(div)
-			div.html(a)
+	}
+	if (a === false) {
+		$("#consonants tr:eq(0) th, #vowels tr:eq(0) th").each(function() {
+			$(this).css({"-webkit-transform": ""})
+			$(this).children("div").css({"height": "", "width": ""})
+		})
+	}
+}
+$(function() {
+	$.post("ipa.php", {"mode": "2", "filename": "All"},
+	function(data) {
+		$("#cv").empty()
+		$("#cv").append($(data))
+						$('.half:eq(0)').before($('<div></div>', {class: 'flex'}))
+				$('.half:eq(0)').after($('<div></div>', {class: 'flex'}))
+				$('.half:eq(1)').after($('<div></div>', {class: 'flex'}))
+		$(".sub, audio").remove()
+		rotate(true)
+		$(".rotate, .side").each(function() {
+			$(this).find('div').html($(this).find('div a').text())
+		})
+		$(".rotate").click(function(e) {
+			e.preventDefault()
+			var ri = $(this)[0].cellIndex, $that = $(this)
+			$that.toggleClass('off')
+			$that.parent().parent().parent().find("tr:not(:first)").each(function() {
+				if ($that.hasClass('off')) {
+					$(this).children().eq(ri*2).addClass('off')
+					$(this).children().eq(ri*2-1).addClass('off')
+					$(this).children().eq(ri*2).find("input").attr("checked", false)
+					// $(this).children().eq(ri*2).find("input").attr("checked", !$(this).children().eq(ri*2).find("input").attr("checked"))
+					$(this).children().eq(ri*2-1).find("input").attr("checked", false)
+					// $(this).children().eq(ri*2-1).find("input").attr("checked", !$(this).children().eq(ri*2-1).find("input").attr("checked"))
+
+				}
+				else if (!$that.hasClass('off')) {
+					$(this).children().eq(ri*2).removeClass('off')
+					$(this).children().eq(ri*2-1).removeClass('off')
+					$(this).children().eq(ri*2).find("input").attr("checked", true)
+					// $(this).children().eq(ri*2).find("input").attr("checked", !$(this).children().eq(ri*2).find("input").attr("checked"))
+					$(this).children().eq(ri*2-1).find("input").attr("checked", true)
+					// $(this).children().eq(ri*2-1).find("input").attr("checked", !$(this).children().eq(ri*2-1).find("input").attr("checked"))
+
+				}
+			})
+		})
+		$(".side").click(function() {
+			var $that = $(this)
+			$that.toggleClass('off')
+			$that.parent().find("td").each(function() {
+				if ($that.hasClass('off')) {
+					$(this).addClass('off')
+					$(this).find("input").attr("checked", false)
+				}
+				else if (!$that.hasClass('off')) {
+					$(this).removeClass('off')
+					$(this).find("input").attr("checked", true)
+				}
+
+			})
 		})
 		$("td").each(function() {
 			var letter = $(this).find("a").html() || ""
 			var number = $(this).attr("number") || ""
-			$(this).html("<input name='letters[]' type='checkbox' name='letter[]' value='"+letter+", "+number+"'>"+letter+"</input>")
+			$(this).html("<input name='letters[]' type='checkbox' name='letter[]' checked value='" + letter + ", " + number + "'>" + letter + "</input>")
 		})
-		//$("input").css("-webkit-appearance", "checkbox")
-		$("td").toggle(
-			function(){$(this).find("input").attr("checked", false); $(this).css("color", "lightgray")},
-			function(){$(this).find("input").attr("checked", true); $(this).css("color", "black")}
-		)
-		
-		
-		$(".rotate").toggle(
-			function()  {
-				var ri = $(this)[0].cellIndex
-				$(this).find("div").css("color", "lightgray")
-				$(this).parent().parent().parent().find("tr:not(:first)").each(function()  {
-					$(this).children().eq(ri*2).css("color", "lightgray")
-					$(this).children().eq(ri*2-1).css("color", "lightgray")
-					$(this).children().eq(ri*2).find("input").attr("checked", false)
-					$(this).children().eq(ri*2-1).find("input").attr("checked", false)
-				})
-			},
-			function()  {
-				var ri = $(this)[0].cellIndex
-				$(this).find("div").css("color", "black")
-				$(this).parent().parent().parent().find("tr:not(:first)").each(function()  {
-					$(this).children().eq(ri*2).css("color", "black")
-					$(this).children().eq(ri*2-1).css("color", "black")
-					$(this).children().eq(ri*2).find("input").attr("checked", true)
-					$(this).children().eq(ri*2-1).find("input").attr("checked", true)
-				})
-			}
-		)			
-		$(".side").toggle(
-			function() {$(this).find("a").css("color", "lightgray"); $(this).parent().find("td a").each(function() {$(this).css("display", "none")})},
-			function() {$(this).find("a").css("color", "black"); $(this).parent().find("td a").each(function() {$(this).css({"display":"block", "text-align":"center"})})}
-		)
-	}
-	$(function() {
-		$.post("ipa.php",{"mode":"2", "filename":"All"},
-		function(data) {
-			$("section").html(data)
-			ipa()
-			$(".sub").remove()
+		$("td").click(function() {
+			$(this).find('input').attr('checked', !$(this).find('input').attr('checked'))
+			$(this).toggleClass('off')
 		})
-		$("button").click(function() {
-			var name = prompt("Language Name", "");
-			if (name != null && name != "") {
-				$.ajax({
-					type: "POST",
-					url: "ipa.php",
-					data: $("form").serialize() + "&mode=3&filename="+name,
-					dataType: "text",
-					success: function(data) {alert("Thank you! "+capital(name)+" submitted."); window.location.href='index.html'}					
-				})
-				
-				
-			}			
-		})
-		
-	})
-	</script>	
-	<form><section></section></form>
-	<div id=footer>
-		Make sure your browser is set to standard <a href='http://www.unc.edu/~jlsmith/ipa-fonts.html' target='_blank' class='link'>Unicode</a> fonts in order for the page to properly render.<br />
-		Not configured for Internet Explorer. Designed in <a href='https://www.google.com/intl/en/chrome/browser/' target='_blank' class='link'>Google Chrome</a>.<br />
-		Please contact me with any question, suggestions for features, errors encountered or language requests.<br />
-		©2012 Matthew Morrone <a href="mailto:mam315@pitt.edu" class='link'>mam315@pitt.edu</a>
-	</div>
-	</body>
-</html>
 
+	})
+	$("button").click(function() {
+		var name = $('#name').val()
+		if (name) {
+			$.ajax({
+				type: "POST",
+				url: "ipa.php",
+				data: $("form").serialize() + "&mode=3&filename=" + name,
+				dataType: "text",
+				success: function(data) {
+					alert("Thank you! " + capital(name) + " submitted.");
+					window.location.href = 'index.html'
+				}
+			})
+		}
+	})
+
+	$('#cv').antiselect(true)
+	$("#year").text(new Date().getFullYear())
+})
+</script>
+
+<div id=footer>
+	Make sure your browser is set to standard <a href='http://www.unc.edu/~jlsmith/ipa-fonts.html' target='_blank' class='link'>Unicode</a> fonts in order for the page to properly render.<br />
+	Not configured for Internet Explorer. Designed in <a href='https://www.google.com/intl/en/chrome/browser/' target='_blank' class='link'>Google Chrome</a>.<br />
+	Please contact me with any question, suggestions for features, errors encountered or language requests.<br />
+	&copy;<span id='year'></span> Matthew Morrone <a href="mailto:matthewmorrone1@gmail.com" class='link'>matthewmorrone1@gmail.com</a>
+</div>
+</body>
+</html>
