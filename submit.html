@@ -74,7 +74,7 @@ caption {
 	text-align: center;
 }
 nav {
-	width: 10%;
+	width: 30%;
 	margin: auto;
 }
 #cv, #type, #menu, nav {
@@ -116,6 +116,12 @@ button {
 	height: 130px;
 	width: 1px;
 }
+#showAll {
+	display: inline-block;
+}
+tr:first-child th:first-child {
+	pointer-events: none;
+}
 </style>
 <script src="jquery.js"></script>
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
@@ -125,44 +131,33 @@ button {
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
 </head>
 <body>
-<nav><input type=text id=name /><button>Submit</button></nav>
+<nav>
+<button id="toggleAll">Toggle All</button>
+<label style='margin-right: 30px;' ><input id="showAll" type='checkbox' checked />&nbsp;Show All</label>
+<input type=text id=name />
+<button id='submit'>Submit</button>
+</nav>
 <main>
 <form>
 <div id='cv'>
 </div>
 </form>
+<div id='type'>
+<div class='flex'></div>
+<textarea id='notes' placeholder='notes...'></textarea>
+<div class='flex'></div>
+</div>
 </main>
+<script src='util.js'></script>
 <script>
-$.fn.antiselect = function(b) {
-	if (b === true) {
-		$(this).css({"-webkit-touch-callout": "none", "-webkit-user-select": "none", "-khtml-user-select": "none", "-moz-user-select": "none", "-ms-user-select": "none", "user-select": "none"})
-	}
-	if (b === false) {
-		$(this).css({"-webkit-touch-callout": "", "-webkit-user-select": "", "-khtml-user-select": "", "-moz-user-select": "", "-ms-user-select": "", "user-select": ""})
-	}
-}
-function rotate(a) {
-	if (a === true) {
-		$("#consonants tr:eq(0) th, #vowels tr:eq(0) th").each(function() {
-			$(this).css({"-webkit-transform": "rotate(270deg) translate(-38px,40px)", "-moz-transform": "rotate(270deg) translate(-38px,40px)", "white-space": "nowrap"})
-			$(this).children("div").css({"height": "100", "width": "25"})
-		})
-	}
-	if (a === false) {
-		$("#consonants tr:eq(0) th, #vowels tr:eq(0) th").each(function() {
-			$(this).css({"-webkit-transform": ""})
-			$(this).children("div").css({"height": "", "width": ""})
-		})
-	}
-}
-$(function() {
-	$.post("ipa.php", {"mode": "2", "filename": "All"},
+function render(filename) {
+	$.post("ipa.php", {"mode": "2", "filename": filename},
 	function(data) {
 		$("#cv").empty()
 		$("#cv").append($(data))
-						$('.half:eq(0)').before($('<div></div>', {class: 'flex'}))
-				$('.half:eq(0)').after($('<div></div>', {class: 'flex'}))
-				$('.half:eq(1)').after($('<div></div>', {class: 'flex'}))
+		$('.half:eq(0)').before($('<div></div>', {class: 'flex'}))
+		$('.half:eq(0)').after($('<div></div>', {class: 'flex'}))
+		$('.half:eq(1)').after($('<div></div>', {class: 'flex'}))
 		$(".sub, audio").remove()
 		rotate(true)
 		$(".rotate, .side").each(function() {
@@ -177,19 +172,13 @@ $(function() {
 					$(this).children().eq(ri*2).addClass('off')
 					$(this).children().eq(ri*2-1).addClass('off')
 					$(this).children().eq(ri*2).find("input").attr("checked", false)
-					// $(this).children().eq(ri*2).find("input").attr("checked", !$(this).children().eq(ri*2).find("input").attr("checked"))
 					$(this).children().eq(ri*2-1).find("input").attr("checked", false)
-					// $(this).children().eq(ri*2-1).find("input").attr("checked", !$(this).children().eq(ri*2-1).find("input").attr("checked"))
-
 				}
 				else if (!$that.hasClass('off')) {
 					$(this).children().eq(ri*2).removeClass('off')
 					$(this).children().eq(ri*2-1).removeClass('off')
 					$(this).children().eq(ri*2).find("input").attr("checked", true)
-					// $(this).children().eq(ri*2).find("input").attr("checked", !$(this).children().eq(ri*2).find("input").attr("checked"))
 					$(this).children().eq(ri*2-1).find("input").attr("checked", true)
-					// $(this).children().eq(ri*2-1).find("input").attr("checked", !$(this).children().eq(ri*2-1).find("input").attr("checked"))
-
 				}
 			})
 		})
@@ -217,15 +206,18 @@ $(function() {
 			$(this).find('input').attr('checked', !$(this).find('input').attr('checked'))
 			$(this).toggleClass('off')
 		})
-
 	})
-	$("button").click(function() {
+}
+$(function() {
+	render('All')
+	$("#submit").click(function() {
 		var name = $('#name').val()
 		if (name) {
+			log($("form").serialize() + "&mode=3&filename=" + name + "&notes=" + $('#notes').val())
 			$.ajax({
 				type: "POST",
 				url: "ipa.php",
-				data: $("form").serialize() + "&mode=3&filename=" + name,
+				data: $("form").serialize() + "&mode=3&filename=" + name + "&notes=" + $('#notes').val(),
 				dataType: "text",
 				success: function(data) {
 					alert("Thank you! " + capital(name) + " submitted.");
@@ -237,9 +229,22 @@ $(function() {
 
 	$('#cv').antiselect(true)
 	$("#year").text(new Date().getFullYear())
+
+
+
+	$('#showAll').click(function() {
+		if ($(this).is(':checked')) {
+			render('All')
+		}
+		else {
+			render('IPA.txt')
+		}
+	})
+	$('#toggleAll').click(function() {
+		$('#cv td').click()
+	})
 })
 </script>
-
 <div id=footer>
 	Make sure your browser is set to standard <a href='http://www.unc.edu/~jlsmith/ipa-fonts.html' target='_blank' class='link'>Unicode</a> fonts in order for the page to properly render.<br />
 	Not configured for Internet Explorer. Designed in <a href='https://www.google.com/intl/en/chrome/browser/' target='_blank' class='link'>Google Chrome</a>.<br />

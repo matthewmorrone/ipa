@@ -1,0 +1,30 @@
+p, 101
+t, 103
+k, 109
+ʔ, 113
+pʰ, 101+403
+tʰ, 103+403
+kʰ, 109+403
+m, 114
+n, 116
+ŋ, 119
+f, 128
+s, 132
+h, 146
+j, 153
+l, 155
+i, 301
+y, 309
+u, 308
+e, 302
+ɵ, 323
+o, 307
+ɛ, 303
+œ, 311
+ɔ, 306
+ɐ, 324
+a, 304
+notes:
+requires aspirated devoice sibilant dental/alveolar affricate /ts^h/
+requires labialized velar stops /k^w/ /k^wh/
+requires velar approximant /w/

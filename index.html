@@ -4,7 +4,7 @@
 <title>An Interactive IPA Chart</title>
 <link href="/psi.ico" rel="shortcut icon" type="image/x-icon">
 <!-- <link href="/reset.css" rel="stylesheet" type="text/css"> -->
-<link href="ipa.css" rel="stylesheet" type="text/css">
+<!-- <link href="ipa.css" rel="stylesheet" type="text/css"> -->
 <style>
 @font-face {
 	font-family: "Raleway";
@@ -85,7 +85,7 @@ nav {
 .flex {
 	flex-grow: 2;
 }
-#language {
+#languages {
 	font-size: 150%;
 	margin: 20px;
 }
@@ -114,24 +114,21 @@ li {
 .rotate, .rotate * {
 	background: none;
 }
+tr:first-child th:first-child {
+	pointer-events: none;
+}
 </style>
 <script src="jquery.js"></script>
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
+<script src='util.js'></script>
+
 <script>
-var log = console.log.bind(console)
-  , selectswitch = false
+var selectswitch = false
   , typeswitch = true
   , soundswitch = true
   , linkswitch = true
   , rotateswitch = true
-$.fn.antiselect = function(b) {
-	if (b === true) {
-		$(this).css({"-webkit-touch-callout": "none", "-webkit-user-select": "none", "-khtml-user-select": "none", "-moz-user-select": "none", "-ms-user-select": "none", "user-select": "none"})
-	}
-	if (b === false) {
-		$(this).css({"-webkit-touch-callout": "", "-webkit-user-select": "", "-khtml-user-select": "", "-moz-user-select": "", "-ms-user-select": "", "user-select": ""})
-	}
-}
+
 function reduce(chart) {
 	var rows, cols, i, j, blankcount, buffer, cellcount, m
 	var rows = $('#'+chart)[0].rows.length
@@ -184,30 +181,6 @@ function clearcell(chart, x, y, bool) {
 	$('#'+chart)[0].rows[x].deleteCell(y);
 	if(bool) {
 		$('#'+chart)[0].rows[x].insertCell(y)
-	}
-}
-function chomp(input, offset) {
-	return input.substring(0, input.length - offset)
-}
-function capital(string) {
-	return string.charAt(0).toUpperCase() + string.slice(1);
-}
-function footer() {
-	var y = $(document).height() + ($("#footer").height()-$(document).height())
-	$("#footer").css("padding-top", y/2-20)
-}
-function rotate(a) {
-	if (a === true) {
-		$("#consonants tr:eq(0) th, #vowels tr:eq(0) th").each(function() {
-			$(this).css({"-webkit-transform": "rotate(270deg) translate(-25px,40px)", "-moz-transform": "rotate(270deg) translate(-25px,40px)", "white-space": "nowrap"})
-			$(this).children("div").css({"height": "100", "width": "25"})
-		})
-	}
-	if (a === false) {
-		$("#consonants tr:eq(0) th, #vowels tr:eq(0) th").each(function() {
-			$(this).css({"-webkit-transform": ""})
-			$(this).children("div").css({"height": "", "width": ""})
-		})
 	}
 }
 function ipa() {
@@ -314,36 +287,75 @@ function ipa() {
 		document.execCommand('copy')
 	})
 }
-function render() {
-	var filename, displayname
+
+
+
+function initialize() {
 	$.post("ipa.php", {"mode": "1"},
 	function(data) {
-		$("nav").html(data)
-		$("#language").change(function() {
-			filename = $(this).val()
-			$.post("ipa.php", {"mode": "2", "filename": filename},
-			function(data) {
-				filename.indexOf(".") > -1 ? displayname = capital(chomp(filename, 4)) : displayname = filename
-				$("title").html(displayname + " | An Interactive IPA Chart")
-				$("#cv").empty()
-				$("#cv").append($(data))
-				$('.half:eq(0)').before($('<div></div>', {class: 'flex'}))
-				$('.half:eq(0)').after($('<div></div>', {class: 'flex'}))
-				$('.half:eq(1)').after($('<div></div>', {class: 'flex'}))
-				ipa()
-
-				$('#type, #menu')
-					.css('margin-left',  $('.half:eq(0)').prevAll('.flex:first').width())
-					.css('margin-right', $('.half:eq(0)').prevAll('.flex:first').width())
-
-				$("#select_switch").click()
-				$("#link_switch").click()
-				$('#scratch').focus()
-			})
+		var $languages = $('<select></select>', {id: 'languages'})
+		$.each(JSON.parse(data), function(i, value) {
+			$languages.append($('<option>').text(value.chomp(4).capital()).attr('value', value));
 		})
-		$("#language").trigger("change")
+		$("nav").append($languages)
+		$languages.find('option:contains("ipa")').text('IPA')
+		$('#languages option').removeAttr('selected')
+		$languages.find('option:contains("ipa")').attr('selected', true)
+		$languages.prepend($languages.find('option:contains("ipa")'))
+
+		var $lang = $('#languages option[value="'+window.location.search.slice(1)+'.txt"]')
+		if ($lang.length > 0) {
+			log(window.location.search.slice(1), $lang)
+			$('#languages option').removeAttr('selected')
+			$lang.attr('selected', true)
+			render($lang.val())
+		}
+		else {
+			render('ipa.txt')
+		}
+	})
+
+	$(document).on('change', "#languages", function() {
+		filename = $(this).val()
+		var loc = window.location.protocol + "//" + window.location.host + window.location.pathname
+		if (filename !== 'ipa.txt') {
+			loc += '?' + filename.chomp(4)
+		}
+		window.history.pushState('', '', loc)
+		render(filename)
+	})
+
+}
+function render(filename) {
+	$.post("ipa.php", {"mode": "2", "filename": filename},
+	function(data) {
+		filename.indexOf(".") > -1 ? filename = capital(chomp(filename, 4)) : filename = filename
+		filename.toLowerCase().includes('ipa') ? filename = filename.toUpperCase() : filename = filename
+		$("title").html(filename + " | An Interactive IPA Chart")
+		$("#cv").empty()
+		$("#cv").append($(data))
+		$('.half:eq(0)').before($('<div></div>', {class: 'flex'}))
+		$('.half:eq(0)').after($('<div></div>', {class: 'flex'}))
+		$('.half:eq(1)').after($('<div></div>', {class: 'flex'}))
+		ipa()
+
+		$('#type, #menu')
+			.css('margin-left',  $('.half:eq(0)').prevAll('.flex:first').width())
+			.css('margin-right', $('.half:eq(0)').prevAll('.flex:first').width())
+
+		$("#select_switch").click()
+		$("#link_switch").click()
+		$('#scratch').focus()
 	})
 }
+
+
+
+
+
+
+
+
 function extras() {
 	var table, popup, popupsize, pressed, startX, startY, moveX, moveY
 	$("#extras > li").click(function() {
@@ -429,11 +441,9 @@ function extras() {
 </main>
 <script>
 $(function() {
-	render()
+	initialize()
 	extras()
-
 	$("#year").text(new Date().getFullYear())
-
 })
 </script>
 <div id="footer">

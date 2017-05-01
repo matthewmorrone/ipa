@@ -1,0 +1,37 @@
+p, 101
+b, 102
+t, 103
+d, 104
+k, 109
+ɡ, 110
+m, 114
+n, 116
+ɲ, 118
+ɾ, 124
+f, 128
+v, 129
+s, 132
+z, 133
+ʃ, 134
+ʒ, 135
+ʁ, 143
+ɰ, 154
+l, 155
+ʎ, 157
+ʧ, 213
+ʤ, 214
+i, 301
+u, 308
+ɪ, 319
+ʊ, 321
+e, 302
+o, 307
+ɛ, 303
+ɔ, 306
+ɐ, 324
+a, 304
+
+notes:
+needs centralized e (umlaut on top)
+many vowels have a nasalized variant (tilda on top)
+velar consonants have labialized versions

@@ -1,0 +1,30 @@
+b, 102
+t, 103
+d, 104
+ʔ, 113
+m, 114
+n, 116
+r, 122
+f, 128
+θ, 130
+ð, 131
+s, 132
+z, 133
+ʃ, 134
+x, 140
+ɣ, 141
+χ, 142
+ʁ, 143
+ħ, 144
+ʕ, 145
+h, 146
+ɰ, 154
+l, 155
+ʤ, 214
+i, 301
+u, 308
+a, 304
+
+notes:
+all three vowels have long variant /*:/
+dental-alveolar consonants have pharyngeal/emphatic correspondences

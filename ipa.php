@@ -41,21 +41,7 @@ function load_sounds() {
 	print("</section>");
 }
 function languages($dir) {
-	if (is_dir($dir)) {
-		if ($dh = opendir($dir)) {
-			echo ("<select id='language'>");
-			echo ("<option>All</option>");
-			while (($file = readdir($dh)) !== false) {
-				if ($file == "." || $file == ".." || substr($file, 0, 1) == ".") {continue;}
-				echo ("<option value='$file' ");
-				if ($file == "IPA.txt") {
-					echo ("selected");
-				}
-				echo (">".ucfirst(chomp($file, 4))."</option>");
-			}
-			echo ("</select>");
-		}
-	}
+	echo json_encode(array_slice(scandir($dir), 2));
 }
 function search($lookup, $letters) {
 	foreach ($letters as $l) {
@@ -67,7 +53,10 @@ function search($lookup, $letters) {
 function print_chart($reference) {
 	$filename = $_POST["filename"];
 	$name = ucfirst(chomp($filename, 4));
-	$letters = file("languages/".$filename);
+	$letters = file_get_contents("languages/".$filename);
+	$letters = preg_replace('/\nnotes:.+/', '', $letters);
+	$letters = explode("\n", $letters);
+
 	foreach ($letters as &$letter) {
 		$letter = explode(", ", $letter);
 	}
@@ -167,8 +156,13 @@ if ($mode == 3) {
 	$lines = $_POST["letters"];
 	print_r($lines);
 	foreach ($lines as $i) {
-		fwrite($file, $i."\r\n");
+		fwrite($file, trim($i)."\r\n");
 	}
+	fwrite($file, "\r\n");
+	fwrite($file, "notes:\r\n");
+	fwrite($file, $_POST["notes"]);
+	fwrite($file, "\r\n");
+
 	fclose($file);
 	echo "Thank you for submitting the $filename language!";
 }
