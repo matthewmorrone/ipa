@@ -186,8 +186,10 @@ function clearcell(chart, x, y, bool) {
 function ipa() {
 
 	// $('#cv').slideUp(1000)
-	reduce("consonants")
-	reduce("vowels")
+	if ($('#languages').val() !== 'all') {
+		reduce("consonants")
+		reduce("vowels")
+	}
 	// $('#cv').slideDown(1000)
 
 	$("a.sound").click(function(e) {
@@ -302,6 +304,7 @@ function initialize() {
 		$('#languages option').removeAttr('selected')
 		$languages.find('option:contains("ipa")').attr('selected', true)
 		$languages.prepend($languages.find('option:contains("ipa")'))
+		$languages.prepend($languages.find('option:contains("all")'))
 
 		var $lang = $('#languages option[value="'+window.location.search.slice(1)+'.txt"]')
 		if ($lang.length > 0) {
@@ -350,12 +353,6 @@ function render(filename) {
 }
 
 
-
-
-
-
-
-
 function extras() {
 	var table, popup, popupsize, pressed, startX, startY, moveX, moveY
 	$("#extras > li").click(function() {
@@ -398,7 +395,6 @@ function extras() {
 			},
 			'text')
 		}
-
 	})
 }
 
