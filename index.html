@@ -2,21 +2,19 @@
 <head>
 <meta charset=utf-8></meta>
 <title>An Interactive IPA Chart</title>
-<link href="/psi.ico" rel="shortcut icon" type="image/x-icon">
-<!-- <link href="/reset.css" rel="stylesheet" type="text/css"> -->
-<!-- <link href="ipa.css" rel="stylesheet" type="text/css"> -->
+<link rel="shortcut icon" type="image/x-icon" href="https://www.matthewmorrone.com/psi.ico" />
 <style>
 @font-face {
 	font-family: "Raleway";
 	font-style: normal;
 	font-weight: 200px;
-	src: local("Raleway"), url(http://themes.googleusercontent.com/static/fonts/raleway/v6/cIFy4yrWPDz3zOxk7hIQLUuEpTyoUstqEm5AMlJo4.woff) format("woff");
+	src: local("Raleway"), url(https://themes.googleusercontent.com/static/fonts/raleway/v6/cIFy4yrWPDz3zOxk7hIQLUuEpTyoUstqEm5AMlJo4.woff) format("woff");
 }
 @font-face {
 	font-family: "Open Sans";
 	font-style: normal;
 	font-weight: 200px;
-	src: local("Open Sans"), local("OpenSans"), url(http://themes.googleusercontent.com/static/fonts/opensans/v6/cJZKeOuBrn4kERxqtaUH3bO3LdcAZYWl9Si6vvxL-qU.woff) format("woff");
+	src: local("Open Sans"), local("OpenSans"), url(https://themes.googleusercontent.com/static/fonts/opensans/v6/cJZKeOuBrn4kERxqtaUH3bO3LdcAZYWl9Si6vvxL-qU.woff) format("woff");
 }
 * {
 	margin: 0px;
@@ -123,6 +121,10 @@ tr:first-child th:first-child {
 <script src='util.js'></script>
 
 <script>
+var online = navigator.onLine;
+console.log(online)
+
+
 var selectswitch = false
   , typeswitch = true
   , soundswitch = true
@@ -186,13 +188,14 @@ function clearcell(chart, x, y, bool) {
 function ipa() {
 
 	// $('#cv').slideUp(1000)
-	if ($('#languages').val() !== 'all') {
-		reduce("consonants")
-		reduce("vowels")
-	}
+	reduce("consonants")
+	reduce("vowels")
 	// $('#cv').slideDown(1000)
 
 	$("a.sound").click(function(e) {
+		if (!online) {
+			return
+		}
 		if (linkswitch === true) {
 			return
 		}
@@ -290,7 +293,30 @@ function ipa() {
 	})
 }
 
+function render(filename) {
+	filename = filename || 'ipa.txt'
+	$.post("ipa.php", {"mode": "2", "filename": filename},
+	function(data) {
+		filename.indexOf(".") > -1 ? filename = capital(chomp(filename, 4)) : filename = filename
+		filename.toLowerCase().includes('ipa') ? filename = filename.toUpperCase() : filename = filename
+		$("title").html(filename + " | An Interactive IPA Chart")
 
+		$("#cv").empty()
+		$("#cv").append($(data))
+		$('.half:eq(0)').before($('<div></div>', {class: 'flex'}))
+		$('.half:eq(0)').after($('<div></div>', {class: 'flex'}))
+		$('.half:eq(1)').after($('<div></div>', {class: 'flex'}))
+		ipa()
+
+		$('#type, #menu')
+			.css('margin-left',  $('.half:eq(0)').prevAll('.flex:first').width())
+			.css('margin-right', $('.half:eq(0)').prevAll('.flex:first').width())
+
+		$("#select_switch").click()
+		$("#link_switch").click()
+		$('#scratch').focus()
+	})
+}
 
 function initialize() {
 	$.post("ipa.php", {"mode": "1"},
@@ -299,6 +325,8 @@ function initialize() {
 		$.each(JSON.parse(data), function(i, value) {
 			$languages.append($('<option>').text(value.chomp(4).capital()).attr('value', value));
 		})
+		// $languages.append($('<option>').text("ipa").attr('value', 'ipa.txt'));
+
 		$("nav").append($languages)
 		$languages.find('option:contains("ipa")').text('IPA')
 		$('#languages option').removeAttr('selected')
@@ -308,7 +336,7 @@ function initialize() {
 
 		var $lang = $('#languages option[value="'+window.location.search.slice(1)+'.txt"]')
 		if ($lang.length > 0) {
-			log(window.location.search.slice(1), $lang)
+			console.log(window.location.search.slice(1), $lang)
 			$('#languages option').removeAttr('selected')
 			$lang.attr('selected', true)
 			render($lang.val())
@@ -327,31 +355,7 @@ function initialize() {
 		window.history.pushState('', '', loc)
 		render(filename)
 	})
-
 }
-function render(filename) {
-	$.post("ipa.php", {"mode": "2", "filename": filename},
-	function(data) {
-		filename.indexOf(".") > -1 ? filename = capital(chomp(filename, 4)) : filename = filename
-		filename.toLowerCase().includes('ipa') ? filename = filename.toUpperCase() : filename = filename
-		$("title").html(filename + " | An Interactive IPA Chart")
-		$("#cv").empty()
-		$("#cv").append($(data))
-		$('.half:eq(0)').before($('<div></div>', {class: 'flex'}))
-		$('.half:eq(0)').after($('<div></div>', {class: 'flex'}))
-		$('.half:eq(1)').after($('<div></div>', {class: 'flex'}))
-		ipa()
-
-		$('#type, #menu')
-			.css('margin-left',  $('.half:eq(0)').prevAll('.flex:first').width())
-			.css('margin-right', $('.half:eq(0)').prevAll('.flex:first').width())
-
-		$("#select_switch").click()
-		$("#link_switch").click()
-		$('#scratch').focus()
-	})
-}
-
 
 function extras() {
 	var table, popup, popupsize, pressed, startX, startY, moveX, moveY
@@ -397,7 +401,6 @@ function extras() {
 		}
 	})
 }
-
 </script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.css" />
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">

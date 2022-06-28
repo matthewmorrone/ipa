@@ -1,4 +1,4 @@
-<?php
+<?
 
 error_reporting(0);
 
@@ -50,8 +50,8 @@ function search($lookup, $letters) {
 		}
 	}
 }
-function print_chart($reference) {
-	$filename = $_POST["filename"];
+function print_chart($reference, $filename) {
+
 	$name = ucfirst(chomp($filename, 4));
 	$letters = file_get_contents("languages/".$filename);
 	$letters = preg_replace('/\nnotes:.+/', '', $letters);
@@ -140,15 +140,17 @@ function other_tables($name) {
 	return $result;
 }
 
-$mode = $_POST["mode"];
+$mode = $_POST["mode"] ? $_POST["mode"] : $_GET["mode"];
+$filename = $_POST["filename"] ? $_POST["filename"] : $_GET["filename"];
+
 $dir = "languages";
 
 if ($mode == 1) {
 	languages($dir);
 }
 if ($mode == 2) {
-	print_chart("consonants");
-	print_chart("vowels");
+	print_chart("consonants", $filename);
+	print_chart("vowels", $filename);
 }
 if ($mode == 3) {
 	$filename = $_POST["filename"].".txt";
