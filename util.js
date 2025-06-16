@@ -15,15 +15,15 @@ Object.defineProperty(Object.prototype, "define", {
     enumerable: false,
     writable: false,
     value: function (name, value) {
-        if (Object[name]) {
-            delete Object[name];
+        if (this.hasOwnProperty(name)) {
+            delete this[name];
         }
         Object.defineProperty(this, name, {
             configurable: true,
             enumerable: false,
             value: value
         });
-        return this.name;
+        return this[name];
     }
 });
 String.prototype.define('chomp', function(offset) {
@@ -46,7 +46,7 @@ function rotate(a) {
 	if (a === true) {
 		$("#consonants tr:eq(0) th, #vowels tr:eq(0) th").each(function() {
 			$(this).css({"-webkit-transform": "rotate(270deg) translate(-25px,40px)", "-moz-transform": "rotate(270deg) translate(-25px,40px)", "white-space": "nowrap"})
-			$(this).children("div").css({"height": "100", "width": "25"})
+                        $(this).children("div").css({"height": "100px", "width": "25px"})
 		})
 	}
 	if (a === false) {
