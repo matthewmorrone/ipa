@@ -116,8 +116,6 @@ tr:first-child th:first-child {
 	pointer-events: none;
 }
 </style>
-<script src="jquery.js"></script>
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
 <script src='util.js'></script>
 
 <script>
@@ -133,21 +131,22 @@ var selectswitch = false
 
 function reduce(chart) {
 	var rows, cols, i, j, blankcount, buffer, cellcount, m
-	var rows = $('#'+chart)[0].rows.length
+	var el = document.getElementById(chart)
+	rows = el.rows.length
 	for (i = rows - 1; i >= 2; i--) {
-		cols = $('#'+chart)[0].rows[i].cells.length-1
+		cols = el.rows[i].cells.length-1
 		blankcount = 0
 		for (j = 0; j <= cols; j++) {
-			if ($('#'+chart)[0].rows[i].cells[j].innerHTML === '') {
+			if (el.rows[i].cells[j].innerHTML === '') {
 				blankcount++
 			}
 		}
 		if (blankcount === cols) {
-			$('#'+chart)[0].deleteRow(i)
+			el.deleteRow(i)
 		}
 	}
-	rows = $('#'+chart)[0].rows.length
-	cols = $('#'+chart)[0].rows[rows-1].childNodes.length
+	rows = el.rows.length
+	cols = el.rows[rows-1].childNodes.length
 	buffer = false
 	for (i = 1; i < cols; i += 2) {
 		if (buffer) {
@@ -157,10 +156,10 @@ function reduce(chart) {
 		blankcount = 0
 		cellcount = 0
 		for (j = 1; j < rows; j += 1) {
-			if ($('#'+chart)[0].rows[j].cells[i].innerHTML === '') 	{
+			if (el.rows[j].cells[i].innerHTML === '') 	{
 				blankcount++
 			}
-			if ($('#'+chart)[0].rows[j].cells[i+1].innerHTML === '') {
+			if (el.rows[j].cells[i+1].innerHTML === '') {
 				blankcount++
 			}
 			cellcount += 2
@@ -180,177 +179,205 @@ function reduce(chart) {
 
 }
 function clearcell(chart, x, y, bool) {
-	$('#'+chart)[0].rows[x].deleteCell(y);
+	var el = document.getElementById(chart)
+	el.rows[x].deleteCell(y);
 	if(bool) {
-		$('#'+chart)[0].rows[x].insertCell(y)
+		el.rows[x].insertCell(y)
 	}
+}
+function toggleDisplay(el) {
+	if (!el) return
+	el.style.display = (getComputedStyle(el).display === 'none') ? '' : 'none'
 }
 function ipa() {
 
-	// $('#cv').slideUp(1000)
 	reduce("consonants")
 	reduce("vowels")
-	// $('#cv').slideDown(1000)
 
-	$("a.sound").click(function(e) {
-		if (!online) {
-			return
-		}
-		if (linkswitch === true) {
-			return
-		}
-		e.preventDefault()
-		if (soundswitch === true) {
-			$(this).next('audio').get(0).play()
-		}
-		if (typeswitch === true) {
-			$("#scratch").val($("#scratch").val() + $(this).html())
-			$('#scratch').focus()
-		}
+	document.querySelectorAll("a.sound").forEach(function(a) {
+		a.addEventListener("click", function(e) {
+			if (!online) {
+				return
+			}
+			if (linkswitch === true) {
+				return
+			}
+			e.preventDefault()
+			if (soundswitch === true) {
+				var audio = a.nextElementSibling
+				if (audio && audio.tagName === 'AUDIO') {
+					audio.play()
+				}
+			}
+			if (typeswitch === true) {
+				var scratch = document.getElementById('scratch')
+				scratch.value += a.innerHTML
+				scratch.focus()
+			}
+		})
 	})
 
-	var ri, table
 	footer()
 	rotate(true)
 
-	$(".rotate").click(function(e) {
-		ri = $(this)[0].cellIndex
-		if (linkswitch === false) {
-			e.preventDefault()
-			$(this).find("a").toggleClass("off")
-			$(this).parent().parent().parent().find("tr:not(:first)").each(function() {
-				$(this).children().eq(ri*2).find("a").toggle()
-				$(this).children().eq(ri*2-1).find("a").toggle()
-			})
-		}
-
-
+	document.querySelectorAll(".rotate").forEach(function(th) {
+		th.addEventListener("click", function(e) {
+			var ri = th.cellIndex
+			if (linkswitch === false) {
+				e.preventDefault()
+				th.querySelectorAll("a").forEach(function(a) { a.classList.toggle("off") })
+				var table = th.closest("table")
+				table.querySelectorAll("tr:not(:first-child)").forEach(function(row) {
+					toggleDisplay(row.children[ri*2].querySelector("a"))
+					toggleDisplay(row.children[ri*2-1].querySelector("a"))
+				})
+			}
+		})
 	})
 
-	$(".third").click(function(e) {
-		$(this).find("a").toggleClass("off")
-		ri = $(this)[0].cellIndex+1
-		table = $(this).parents(".sub").parent().children("table").attr("id")
-		$("#"+table).find("tr:not(:first)").each(function() {
-			$(this).find("td").each(function(i) {
-				if (i % 2 + 1 === ri) {
-					$(this).find("a").toggle()
-				}
+	document.querySelectorAll(".third").forEach(function(th) {
+		th.addEventListener("click", function(e) {
+			th.querySelectorAll("a").forEach(function(a) { a.classList.toggle("off") })
+			var ri = th.cellIndex+1
+			var half = th.closest(".sub").parentElement
+			var tableId = half.querySelector("table").id
+			document.getElementById(tableId).querySelectorAll("tr:not(:first-child)").forEach(function(row) {
+				row.querySelectorAll("td").forEach(function(td, i) {
+					if (i % 2 + 1 === ri) {
+						toggleDisplay(td.querySelector("a"))
+					}
+				})
 			})
 		})
 	})
 
-	$(".side").click(function(e) {
-		if (linkswitch === false) {
-			e.preventDefault()
-
-			$(this).find("a").toggleClass("off");
-			$(this).parent().find("td a").each(function() {
-				$(this).toggle()
-			})
-		}
+	document.querySelectorAll(".side").forEach(function(th) {
+		th.addEventListener("click", function(e) {
+			if (linkswitch === false) {
+				e.preventDefault()
+				th.querySelectorAll("a").forEach(function(a) { a.classList.toggle("off") })
+				th.parentElement.querySelectorAll("td a").forEach(function(a) { toggleDisplay(a) })
+			}
+		})
 	})
-	$("#menu").antiselect(true)
-	$("#select_switch").click(function() {
-		$(this).toggleClass("off");
+	antiselect(document.getElementById("menu"), true)
+	document.getElementById("select_switch").addEventListener("click", function() {
+		this.classList.toggle("off");
 		selectswitch = !selectswitch
-		$("th, td").antiselect(selectswitch)
+		document.querySelectorAll("th, td").forEach(function(el) { antiselect(el, selectswitch) })
 	})
-	$("#type_switch").click(function() {
-		$(this).toggleClass("off");
+	document.getElementById("type_switch").addEventListener("click", function() {
+		this.classList.toggle("off");
 		typeswitch = !typeswitch
 	})
-	$("#sound_switch").click(function() {
-		$(this).toggleClass("off");
+	document.getElementById("sound_switch").addEventListener("click", function() {
+		this.classList.toggle("off");
 		soundswitch = !soundswitch
 	})
-	$("#link_switch").click(function() {
-		$(this).toggleClass("off");
+	document.getElementById("link_switch").addEventListener("click", function() {
+		this.classList.toggle("off");
 		linkswitch = !linkswitch
 	})
-	$("#rotate_switch").click(function() {
-		$(this).toggleClass('off')
+	document.getElementById("rotate_switch").addEventListener("click", function() {
+		this.classList.toggle('off')
 		rotateswitch = !rotateswitch
 		rotate(rotateswitch)
 	})
-	$("#clear_switch").click(function() {
-		$("#scratch").val("")
-		$("#scratch").focus()
+	document.getElementById("clear_switch").addEventListener("click", function() {
+		var scratch = document.getElementById("scratch")
+		scratch.value = ""
+		scratch.focus()
 	})
 
-
-
-	$('#copy_switch').mousedown(function() {
-		$(this).addClass('off')
-	}).mouseup(function() {
-		$(this).removeClass('off')
-	}).mouseout(function() {
-		$(this).removeClass('off')
-	})
-	$('#copy_switch').click(function() {
-		$('#scratch').select()
+	var copySwitch = document.getElementById('copy_switch')
+	copySwitch.addEventListener('mousedown', function() { copySwitch.classList.add('off') })
+	copySwitch.addEventListener('mouseup', function() { copySwitch.classList.remove('off') })
+	copySwitch.addEventListener('mouseout', function() { copySwitch.classList.remove('off') })
+	copySwitch.addEventListener('click', function() {
+		document.getElementById('scratch').select()
 		document.execCommand('copy')
 	})
 }
 
 function render(filename) {
 	filename = filename || 'ipa.txt'
-	$.post("ipa.php", {"mode": "2", "filename": filename},
-	function(data) {
-		filename.indexOf(".") > -1 ? filename = capital(chomp(filename, 4)) : filename = filename
-		filename.toLowerCase().includes('ipa') ? filename = filename.toUpperCase() : filename = filename
-		$("title").html(filename + " | An Interactive IPA Chart")
+	fetch("ipa.php", {method: "POST", body: new URLSearchParams({mode: "2", filename: filename})})
+		.then(function(r) { return r.text() })
+		.then(function(data) {
+			filename.indexOf(".") > -1 ? filename = capital(chomp(filename, 4)) : filename = filename
+			filename.toLowerCase().includes('ipa') ? filename = filename.toUpperCase() : filename = filename
+			document.title = filename + " | An Interactive IPA Chart"
 
-		$("#cv").empty()
-		$("#cv").append($(data))
-		$('.half:eq(0)').before($('<div></div>', {class: 'flex'}))
-		$('.half:eq(0)').after($('<div></div>', {class: 'flex'}))
-		$('.half:eq(1)').after($('<div></div>', {class: 'flex'}))
-		ipa()
+			var cv = document.getElementById("cv")
+			cv.innerHTML = ""
+			cv.insertAdjacentHTML("beforeend", data)
 
-		$('#type, #menu')
-			.css('margin-left',  $('.half:eq(0)').prevAll('.flex:first').width())
-			.css('margin-right', $('.half:eq(0)').prevAll('.flex:first').width())
+			var halves = cv.querySelectorAll(".half")
+			var flexBefore = document.createElement("div")
+			flexBefore.className = "flex"
+			halves[0].insertAdjacentElement("beforebegin", flexBefore)
+			halves[0].insertAdjacentElement("afterend", (function() { var d = document.createElement("div"); d.className = "flex"; return d })())
+			halves[1].insertAdjacentElement("afterend", (function() { var d = document.createElement("div"); d.className = "flex"; return d })())
 
-		$("#select_switch").click()
-		$("#link_switch").click()
-		$('#scratch').focus()
-	})
+			ipa()
+
+			var w = flexBefore.getBoundingClientRect().width + "px"
+			var typeEl = document.getElementById("type")
+			var menuEl = document.getElementById("menu")
+			typeEl.style.marginLeft = w
+			typeEl.style.marginRight = w
+			menuEl.style.marginLeft = w
+			menuEl.style.marginRight = w
+
+			document.getElementById("select_switch").click()
+			document.getElementById("link_switch").click()
+			document.getElementById("scratch").focus()
+		})
 }
 
 function initialize() {
-	$.post("ipa.php", {"mode": "1"},
-	function(data) {
-		var $languages = $('<select></select>', {id: 'languages'})
-		$.each(JSON.parse(data), function(i, value) {
-			$languages.append($('<option>').text(value.chomp(4).capital()).attr('value', value));
+	fetch("ipa.php", {method: "POST", body: new URLSearchParams({mode: "1"})})
+		.then(function(r) { return r.text() })
+		.then(function(data) {
+			var select = document.createElement("select")
+			select.id = "languages"
+			JSON.parse(data).forEach(function(value) {
+				var option = document.createElement("option")
+				option.textContent = capital(chomp(value, 4))
+				option.value = value
+				select.appendChild(option)
+			})
+
+			document.querySelector("nav").appendChild(select)
+
+			var ipaOption = findOptionContaining(select, "ipa")
+			if (ipaOption) ipaOption.textContent = "IPA"
+			Array.prototype.forEach.call(select.options, function(o) { o.removeAttribute("selected") })
+			if (ipaOption) {
+				ipaOption.setAttribute("selected", true)
+				select.insertBefore(ipaOption, select.firstChild)
+			}
+			var allOption = findOptionContaining(select, "all")
+			if (allOption) select.insertBefore(allOption, select.firstChild)
+
+			var lang = select.querySelector('option[value="'+window.location.search.slice(1)+'.txt"]')
+			if (lang) {
+				console.log(window.location.search.slice(1), lang)
+				Array.prototype.forEach.call(select.options, function(o) { o.removeAttribute("selected") })
+				lang.setAttribute("selected", true)
+				render(lang.value)
+			}
+			else {
+				render('ipa.txt')
+			}
 		})
-		// $languages.append($('<option>').text("ipa").attr('value', 'ipa.txt'));
 
-		$("nav").append($languages)
-		$languages.find('option:contains("ipa")').text('IPA')
-		$('#languages option').removeAttr('selected')
-		$languages.find('option:contains("ipa")').attr('selected', true)
-		$languages.prepend($languages.find('option:contains("ipa")'))
-		$languages.prepend($languages.find('option:contains("all")'))
-
-		var $lang = $('#languages option[value="'+window.location.search.slice(1)+'.txt"]')
-		if ($lang.length > 0) {
-			console.log(window.location.search.slice(1), $lang)
-			$('#languages option').removeAttr('selected')
-			$lang.attr('selected', true)
-			render($lang.val())
-		}
-		else {
-			render('ipa.txt')
-		}
-	})
-
-	$(document).on('change', "#languages", function() {
-		filename = $(this).val()
+	document.addEventListener('change', function(e) {
+		if (e.target.id !== 'languages') return
+		var filename = e.target.value
 		var loc = window.location.protocol + "//" + window.location.host + window.location.pathname
 		if (filename !== 'ipa.txt') {
-			loc += '?' + filename.chomp(4)
+			loc += '?' + chomp(filename, 4)
 		}
 		window.history.pushState('', '', loc)
 		render(filename)
@@ -358,51 +385,45 @@ function initialize() {
 }
 
 function extras() {
-	var table, popup, popupsize, pressed, startX, startY, moveX, moveY
-	$("#extras > li").click(function() {
-		if (!$(this).hasClass("off")) {
-			$("#" + table).remove();
-			$(this).addClass("off")
-		}
-		else {
-			table = $(this).html()
-			$(this).removeClass("off")
-			$("#" + table).remove()
-			popup = $("#extras").after("<div class='popup' id='" + table + "'></div>")
-			$("#" + table).css({
-				"position": "fixed",
-				"left": ($(this).index()+1)*300+"px",
-				"top": "300px",
-				"z-index": "5",
-				"background-color": "white"
-			})
-			$.post("ipa.php", {"mode": 4, "table": table}, function(data) {
-				$("#" + table).append(data)
-				$("th.clickah").hide()
-				$(".clickah").each(function() {
-					$(this).next('td').hide()
-					$(this).attr('title', $(this).next('td').text())
+	var panelsContainer = document.getElementById("extras-panels")
+	document.querySelectorAll("#extras > li").forEach(function(li) {
+		li.addEventListener("click", function() {
+			var table = li.textContent
+			var existing = document.getElementById(table)
+			if (existing) {
+				existing.remove()
+				li.classList.add("off")
+				return
+			}
+			li.classList.remove("off")
+			var panel = document.createElement("div")
+			panel.className = "popup"
+			panel.id = table
+			panelsContainer.appendChild(panel)
+			fetch("ipa.php", {method: "POST", body: new URLSearchParams({mode: 4, table: table})})
+				.then(function(r) { return r.text() })
+				.then(function(data) {
+					panel.insertAdjacentHTML("beforeend", data)
+					panel.querySelectorAll("th.clickah").forEach(function(th) { th.style.display = "none" })
+					panel.querySelectorAll(".clickah").forEach(function(el) {
+						var sibling = el.nextElementSibling
+						if (sibling) {
+							sibling.style.display = "none"
+							el.setAttribute("title", sibling.textContent)
+						}
+					})
+					panel.querySelectorAll("td.clickah").forEach(function(td) {
+						td.addEventListener("click", function() {
+							var scratch = document.getElementById("scratch")
+							scratch.value += td.innerHTML
+							scratch.focus()
+						})
+					})
 				})
-				$("td.clickah").click(function() {
-					$("#scratch").val($("#scratch").val() + $(this).html())
-					$("#scratch").focus()
-				})
-				$("#" + table).draggable({
-					handle: "th",
-					snap: true
-				}).resizable({
-					snap: true,
-					minWidth: $("#" + table).width(),
-					minHeight: $("#" + table).height(),
-					handles: "e, s, se",
-				})
-			},
-			'text')
-		}
+		})
 	})
 }
 </script>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.css" />
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
 </head>
 <body>
@@ -437,12 +458,13 @@ function extras() {
 			<li class='off'>Tones</li>
 		</ul>
 	</div>
+	<div id='extras-panels'></div>
 </main>
 <script>
-$(function() {
+document.addEventListener('DOMContentLoaded', function() {
 	initialize()
 	extras()
-	$("#year").text(new Date().getFullYear())
+	document.getElementById('year').textContent = new Date().getFullYear()
 })
 </script>
 <div id="footer">

@@ -1,58 +1,49 @@
 var log = console.log.bind(console)
-$.fn.antiselect = function(b) {
-	if (b === true) {
-		$(this).css({"-webkit-touch-callout": "none", "-webkit-user-select": "none", "-khtml-user-select": "none", "-moz-user-select": "none", "-ms-user-select": "none", "user-select": "none"})
-	}
-	if (b === false) {
-		$(this).css({"-webkit-touch-callout": "", "-webkit-user-select": "", "-khtml-user-select": "", "-moz-user-select": "", "-ms-user-select": "", "user-select": ""})
-	}
+
+function antiselect(el, on) {
+	var props = ["webkitTouchCallout", "webkitUserSelect", "khtmlUserSelect", "MozUserSelect", "msUserSelect", "userSelect"]
+	props.forEach(function(p) {
+		el.style[p] = on ? "none" : ""
+	})
 }
-$.expr[':'].contains = function(a, i, m) {
-	return $(a).text().toUpperCase().indexOf(m[3].toUpperCase()) >= 0;
-};
-Object.defineProperty(Object.prototype, "define", {
-    configurable: true,
-    enumerable: false,
-    writable: false,
-    value: function (name, value) {
-        if (this.hasOwnProperty(name)) {
-            delete this[name];
-        }
-        Object.defineProperty(this, name, {
-            configurable: true,
-            enumerable: false,
-            value: value
-        });
-        return this[name];
-    }
-});
-String.prototype.define('chomp', function(offset) {
-	return this.substring(0, this.length - offset)
-})
+
+function findOptionContaining(select, text) {
+	text = text.toUpperCase()
+	return Array.prototype.find.call(select.options, function(o) {
+		return o.textContent.toUpperCase().indexOf(text) >= 0
+	})
+}
+
 function chomp(input, offset) {
 	return input.substring(0, input.length - offset)
 }
-String.prototype.define('capital', function() {
-	return this.charAt(0).toUpperCase() + this.slice(1)
-})
 function capital(string) {
 	return string.charAt(0).toUpperCase() + string.slice(1)
 }
 function footer() {
-	var y = $(document).height() + ($("#footer").height()-$(document).height())
-	$("#footer").css("padding-top", y/2-20)
+	var footerEl = document.getElementById("footer")
+	var y = document.documentElement.scrollHeight + (footerEl.offsetHeight - document.documentElement.scrollHeight)
+	footerEl.style.paddingTop = (y / 2 - 20) + "px"
 }
 function rotate(a) {
-	if (a === true) {
-		$("#consonants tr:eq(0) th, #vowels tr:eq(0) th").each(function() {
-			$(this).css({"-webkit-transform": "rotate(270deg) translate(-25px,40px)", "-moz-transform": "rotate(270deg) translate(-25px,40px)", "white-space": "nowrap"})
-                        $(this).children("div").css({"height": "100px", "width": "25px"})
-		})
-	}
-	if (a === false) {
-		$("#consonants tr:eq(0) th, #vowels tr:eq(0) th").each(function() {
-			$(this).css({"-webkit-transform": ""})
-			$(this).children("div").css({"height": "", "width": ""})
-		})
-	}
+	var headers = document.querySelectorAll("#consonants tr:first-child th, #vowels tr:first-child th")
+	headers.forEach(function(th) {
+		var div = th.querySelector("div")
+		if (a === true) {
+			th.style.webkitTransform = "rotate(270deg) translate(-25px,40px)"
+			th.style.MozTransform = "rotate(270deg) translate(-25px,40px)"
+			th.style.whiteSpace = "nowrap"
+			if (div) {
+				div.style.height = "100px"
+				div.style.width = "25px"
+			}
+		}
+		if (a === false) {
+			th.style.webkitTransform = ""
+			if (div) {
+				div.style.height = ""
+				div.style.width = ""
+			}
+		}
+	})
 }

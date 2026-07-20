@@ -123,11 +123,6 @@ tr:first-child th:first-child {
 	pointer-events: none;
 }
 </style>
-<script src="jquery.js"></script>
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
-<script>
-</script>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.css" />
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
 </head>
 <body>
@@ -151,97 +146,100 @@ tr:first-child th:first-child {
 <script src='util.js'></script>
 <script>
 function render(filename) {
-	$.post("ipa.php", {"mode": "2", "filename": filename},
-	function(data) {
-		$("#cv").empty()
-		$("#cv").append($(data))
-		$('.half:eq(0)').before($('<div></div>', {class: 'flex'}))
-		$('.half:eq(0)').after($('<div></div>', {class: 'flex'}))
-		$('.half:eq(1)').after($('<div></div>', {class: 'flex'}))
-		$(".sub, audio").remove()
-		rotate(true)
-		$(".rotate, .side").each(function() {
-			$(this).find('div').html($(this).find('div a').text())
-		})
-		$(".rotate").click(function(e) {
-			e.preventDefault()
-			var ri = $(this)[0].cellIndex, $that = $(this)
-			$that.toggleClass('off')
-			$that.parent().parent().parent().find("tr:not(:first)").each(function() {
-				if ($that.hasClass('off')) {
-					$(this).children().eq(ri*2).addClass('off')
-					$(this).children().eq(ri*2-1).addClass('off')
-					$(this).children().eq(ri*2).find("input").attr("checked", false)
-					$(this).children().eq(ri*2-1).find("input").attr("checked", false)
-				}
-				else if (!$that.hasClass('off')) {
-					$(this).children().eq(ri*2).removeClass('off')
-					$(this).children().eq(ri*2-1).removeClass('off')
-					$(this).children().eq(ri*2).find("input").attr("checked", true)
-					$(this).children().eq(ri*2-1).find("input").attr("checked", true)
-				}
-			})
-		})
-		$(".side").click(function() {
-			var $that = $(this)
-			$that.toggleClass('off')
-			$that.parent().find("td").each(function() {
-				if ($that.hasClass('off')) {
-					$(this).addClass('off')
-					$(this).find("input").attr("checked", false)
-				}
-				else if (!$that.hasClass('off')) {
-					$(this).removeClass('off')
-					$(this).find("input").attr("checked", true)
-				}
+	fetch("ipa.php", {method: "POST", body: new URLSearchParams({mode: "2", filename: filename})})
+		.then(function(r) { return r.text() })
+		.then(function(data) {
+			var cv = document.getElementById("cv")
+			cv.innerHTML = ""
+			cv.insertAdjacentHTML("beforeend", data)
 
+			var halves = cv.querySelectorAll(".half")
+			halves[0].insertAdjacentElement("beforebegin", (function() { var d = document.createElement("div"); d.className = "flex"; return d })())
+			halves[0].insertAdjacentElement("afterend", (function() { var d = document.createElement("div"); d.className = "flex"; return d })())
+			halves[1].insertAdjacentElement("afterend", (function() { var d = document.createElement("div"); d.className = "flex"; return d })())
+
+			cv.querySelectorAll(".sub, audio").forEach(function(el) { el.remove() })
+			rotate(true)
+			cv.querySelectorAll(".rotate, .side").forEach(function(th) {
+				var div = th.querySelector("div")
+				var a = div.querySelector("a")
+				div.textContent = a.textContent
+			})
+			cv.querySelectorAll(".rotate").forEach(function(th) {
+				th.addEventListener("click", function(e) {
+					e.preventDefault()
+					var ri = th.cellIndex
+					th.classList.toggle("off")
+					var isOff = th.classList.contains("off")
+					var table = th.closest("table")
+					table.querySelectorAll("tr:not(:first-child)").forEach(function(row) {
+						var c1 = row.children[ri*2], c2 = row.children[ri*2-1]
+						c1.classList.toggle("off", isOff)
+						c2.classList.toggle("off", isOff)
+						var i1 = c1.querySelector("input"); if (i1) i1.checked = !isOff
+						var i2 = c2.querySelector("input"); if (i2) i2.checked = !isOff
+					})
+				})
+			})
+			cv.querySelectorAll(".side").forEach(function(th) {
+				th.addEventListener("click", function() {
+					th.classList.toggle("off")
+					var isOff = th.classList.contains("off")
+					th.parentElement.querySelectorAll("td").forEach(function(td) {
+						td.classList.toggle("off", isOff)
+						var input = td.querySelector("input")
+						if (input) input.checked = !isOff
+					})
+				})
+			})
+			var cells = cv.querySelectorAll("td")
+			cells.forEach(function(td) {
+				var a = td.querySelector("a")
+				var letter = a ? a.innerHTML : ""
+				var number = td.getAttribute("number") || ""
+				td.innerHTML = "<input name='letters[]' type='checkbox' name='letter[]' checked value='" + letter + ", " + number + "'>" + letter + "</input>"
+			})
+			cells.forEach(function(td) {
+				td.addEventListener("click", function() {
+					var input = td.querySelector("input")
+					if (input) input.checked = !input.checked
+					td.classList.toggle("off")
+				})
 			})
 		})
-		$("td").each(function() {
-			var letter = $(this).find("a").html() || ""
-			var number = $(this).attr("number") || ""
-			$(this).html("<input name='letters[]' type='checkbox' name='letter[]' checked value='" + letter + ", " + number + "'>" + letter + "</input>")
-		})
-		$("td").click(function() {
-			$(this).find('input').attr('checked', !$(this).find('input').attr('checked'))
-			$(this).toggleClass('off')
-		})
-	})
 }
-$(function() {
+document.addEventListener('DOMContentLoaded', function() {
 	render('All')
-	$("#submit").click(function() {
-		var name = $('#name').val()
+	document.getElementById("submit").addEventListener("click", function() {
+		var name = document.getElementById("name").value
 		if (name) {
-			log($("form").serialize() + "&mode=3&filename=" + name + "&notes=" + $('#notes').val())
-			$.ajax({
-				type: "POST",
-				url: "ipa.php",
-				data: $("form").serialize() + "&mode=3&filename=" + name + "&notes=" + $('#notes').val(),
-				dataType: "text",
-				success: function(data) {
+			var formData = new FormData(document.querySelector("form"))
+			formData.append("mode", "3")
+			formData.append("filename", name)
+			formData.append("notes", document.getElementById("notes").value)
+			log(Array.from(formData.entries()).map(function(e) { return e[0] + "=" + e[1] }).join("&"))
+			fetch("ipa.php", {method: "POST", body: formData})
+				.then(function(r) { return r.text() })
+				.then(function(data) {
 					alert("Thank you! " + capital(name) + " submitted.");
 					window.location.href = 'index.html'
-				}
-			})
+				})
 		}
 	})
 
-	$('#cv').antiselect(true)
-	$("#year").text(new Date().getFullYear())
+	antiselect(document.getElementById("cv"), true)
+	document.getElementById("year").textContent = new Date().getFullYear()
 
-
-
-	$('#showAll').click(function() {
-		if ($(this).is(':checked')) {
+	document.getElementById("showAll").addEventListener("click", function() {
+		if (this.checked) {
 			render('All')
 		}
 		else {
 			render('IPA.txt')
 		}
 	})
-	$('#toggleAll').click(function() {
-		$('#cv td').click()
+	document.getElementById("toggleAll").addEventListener("click", function() {
+		document.querySelectorAll('#cv td').forEach(function(td) { td.click() })
 	})
 })
 </script>
