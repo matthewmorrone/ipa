@@ -3,38 +3,68 @@
 <meta charset=utf-8></meta>
 <title>An Interactive IPA Chart</title>
 <link rel="shortcut icon" type="image/x-icon" href="https://www.matthewmorrone.com/psi.ico" />
+<script>
+(function() {
+	var stored = localStorage.getItem('ipa-theme')
+	var theme = stored || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
+	document.documentElement.setAttribute('data-theme', theme)
+})()
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-@font-face {
-	font-family: "Raleway";
-	font-style: normal;
-	font-weight: 200px;
-	src: local("Raleway"), url(https://themes.googleusercontent.com/static/fonts/raleway/v6/cIFy4yrWPDz3zOxk7hIQLUuEpTyoUstqEm5AMlJo4.woff) format("woff");
+:root {
+	--bg: #f7f4ee;
+	--surface: #ffffff;
+	--text: #2a2521;
+	--text-muted: #6f665c;
+	--border: #ddd6c9;
+	--border-strong: #c2b8a6;
+	--header-tint: #efe9dc;
+	--accent: #a8461f;
+	--accent-contrast: #ffffff;
+	--hover: rgba(168, 70, 31, 0.08);
+	--focus-ring: rgba(168, 70, 31, 0.35);
 }
-@font-face {
-	font-family: "Open Sans";
-	font-style: normal;
-	font-weight: 200px;
-	src: local("Open Sans"), local("OpenSans"), url(https://themes.googleusercontent.com/static/fonts/opensans/v6/cJZKeOuBrn4kERxqtaUH3bO3LdcAZYWl9Si6vvxL-qU.woff) format("woff");
+:root[data-theme="dark"] {
+	--bg: #1a1d23;
+	--surface: #22262e;
+	--text: #ece8e0;
+	--text-muted: #9aa0aa;
+	--border: #3a4048;
+	--border-strong: #4d545e;
+	--header-tint: #262b33;
+	--accent: #e08a53;
+	--accent-contrast: #1a1d23;
+	--hover: rgba(224, 138, 83, 0.12);
+	--focus-ring: rgba(224, 138, 83, 0.4);
 }
 * {
 	margin: 0px;
 	padding: 0px;
+	box-sizing: border-box;
+}
+html {
+	min-height: 100%;
+	background: var(--bg);
 }
 body {
 	width: 75%;
-	height: 100%;
+	min-height: 100%;
 	margin: auto;
-	font-family: "Open Sans";
+	padding: 28px 0 10px;
+	font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+	background: var(--bg);
+	color: var(--text);
+	transition: background 0.15s ease, color 0.15s ease;
 }
 a {
-	color: black;
+	color: var(--text);
 	text-decoration: none;
 }
-header, header h1, footer {
-	font-family: "Raleway";
-}
 table, th, td {
-	border: 1px solid black;
+	border: 1px solid var(--border);
 	border-collapse: collapse;
 }
 th, td {
@@ -42,20 +72,41 @@ th, td {
 	min-height: 25px;
 	min-width: 25px;
 }
+th {
+	font-weight: 600;
+}
+th.side, th.third {
+	background: var(--header-tint);
+	transition: background 0.15s ease;
+}
+tr:first-child th:first-child {
+	background: none;
+}
+th.side:hover, td:hover {
+	background: var(--hover);
+}
 .play {
 	display: none;
 }
 .on {
-	color: black;
+	color: var(--text);
 }
 .off {
-	color: lightgray;
+	color: var(--text-muted);
 }
 .sound {
 	font-family: arial;
+	color: var(--text);
 }
 .popup {
 	overflow: hidden;
+	background: var(--surface);
+	border: 1px solid var(--border);
+	border-radius: 8px;
+	padding: 16px;
+	margin: 16px auto;
+	max-width: 100%;
+	overflow-x: auto;
 }
 select option:selected {
 	font-size: 200%;
@@ -73,8 +124,12 @@ caption {
 	text-align: center;
 }
 nav {
-	width: 10%;
-	margin: auto;
+	width: auto;
+	margin: 0 auto 20px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 12px;
 }
 #cv, #type, #menu {
 	display: flex;
@@ -84,26 +139,87 @@ nav {
 	flex-grow: 2;
 }
 #languages {
+	font-family: "Fraunces", Georgia, serif;
 	font-size: 150%;
-	margin: 20px;
+	margin: 20px 0;
+	padding: 6px 14px;
+	background: var(--surface);
+	color: var(--text);
+	border: 1px solid var(--border-strong);
+	border-radius: 8px;
+	cursor: pointer;
+}
+#languages:focus {
+	outline: none;
+	box-shadow: 0 0 0 3px var(--focus-ring);
+}
+#theme_toggle {
+	font-family: inherit;
+	font-size: 20px;
+	line-height: 1;
+	background: var(--surface);
+	border: 1px solid var(--border-strong);
+	border-radius: 50%;
+	width: 40px;
+	height: 40px;
+	cursor: pointer;
+	color: var(--text);
+}
+#theme_toggle:hover {
+	background: var(--hover);
 }
 #scratch {
 	width: 100%;
 	clear: both;
 	font-size: 30px;
 	margin-top: 30px;
+	background: var(--surface);
+	color: var(--text);
+	border: 1px solid var(--border-strong);
+	border-radius: 8px;
+	padding: 12px;
+}
+#scratch:focus {
+	outline: none;
+	box-shadow: 0 0 0 3px var(--focus-ring);
 }
 li {
 	list-style-type: none;
-	display: inline;
+	display: inline-block;
+}
+#menu li {
+	padding: 6px 14px;
+	margin: 4px;
+	border-radius: 999px;
+	border: 1px solid var(--accent);
+	background: var(--accent);
+	color: var(--accent-contrast);
+	cursor: pointer;
+	font-size: 14px;
+	user-select: none;
+	transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+#menu li.off {
+	background: transparent;
+	color: var(--text-muted);
+	border-color: var(--border-strong);
+}
+#menu li:hover {
+	filter: brightness(0.92);
+}
+#extras-panels {
+	clear: both;
 }
 #footer {
 	clear: both;
 	width: 100%;
 	text-align: center;
+	color: var(--text-muted);
+	line-height: 1.9;
+	padding: 40px 20px 20px;
 }
 .link {
-	color: blue;
+	color: var(--accent);
 }
 .popup table {
 	width: 100%;
@@ -427,7 +543,9 @@ function extras() {
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
 </head>
 <body>
-<nav></nav>
+<nav>
+	<button id="theme_toggle" aria-label="Toggle dark mode" title="Toggle dark mode">&#9788;</button>
+</nav>
 <main>
 	<div id='cv'>
 		<!-- <div class='flex'></div> -->
@@ -461,9 +579,24 @@ function extras() {
 	<div id='extras-panels'></div>
 </main>
 <script>
+function initTheme() {
+	var btn = document.getElementById('theme_toggle')
+	function updateIcon() {
+		var isDark = document.documentElement.getAttribute('data-theme') === 'dark'
+		btn.innerHTML = isDark ? '&#9789;' : '&#9788;'
+	}
+	updateIcon()
+	btn.addEventListener('click', function() {
+		var next = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'
+		document.documentElement.setAttribute('data-theme', next)
+		localStorage.setItem('ipa-theme', next)
+		updateIcon()
+	})
+}
 document.addEventListener('DOMContentLoaded', function() {
 	initialize()
 	extras()
+	initTheme()
 	document.getElementById('year').textContent = new Date().getFullYear()
 })
 </script>
