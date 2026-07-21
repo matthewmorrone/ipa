@@ -126,13 +126,18 @@ caption {
 }
 nav {
 	width: auto;
-	margin: 0 auto 20px;
+	margin: 0 auto 40px;
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	gap: 12px;
+	gap: 14px;
+	background: var(--surface);
+	border: 1px solid var(--border);
+	border-radius: 14px;
+	padding: 14px 22px;
+	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
 }
-#cv, #type, #menu {
+#cv, #type {
 	display: flex;
 	flex-flow: row nowrap;
 }
@@ -142,7 +147,6 @@ nav {
 #languages {
 	font-family: "Fraunces", Georgia, serif;
 	font-size: 150%;
-	margin: 20px 0;
 	padding: 6px 14px;
 	background: var(--surface);
 	color: var(--text);
@@ -173,7 +177,6 @@ nav {
 	width: 100%;
 	clear: both;
 	font-size: 30px;
-	margin-top: 30px;
 	background: var(--surface);
 	color: var(--text);
 	border: 1px solid var(--border-strong);
@@ -188,9 +191,40 @@ li {
 	list-style-type: none;
 	display: inline-block;
 }
+#type {
+	margin: 44px 0;
+}
+#menu {
+	display: flex;
+	flex-flow: column nowrap;
+	gap: 18px;
+	background: var(--surface);
+	border: 1px solid var(--border);
+	border-radius: 14px;
+	padding: 18px 22px;
+	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+	margin-bottom: 32px;
+}
+.toolbar-group {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+}
+.toolbar-group .group-label {
+	font-size: 11px;
+	text-transform: uppercase;
+	letter-spacing: 0.08em;
+	color: var(--text-muted);
+	font-weight: 600;
+}
+.toolbar-divider {
+	height: 1px;
+	width: 100%;
+	background: var(--border);
+}
 #menu li {
 	padding: 6px 14px;
-	margin: 4px;
+	margin: 0 4px 4px 0;
 	border-radius: 999px;
 	border: 1px solid var(--accent);
 	background: var(--accent);
@@ -217,7 +251,7 @@ li {
 	text-align: center;
 	color: var(--text-muted);
 	line-height: 1.9;
-	padding: 40px 20px 20px;
+	padding: 56px 20px 20px;
 }
 .link {
 	color: var(--accent);
@@ -559,22 +593,28 @@ function extras() {
 
 	</div>
 	<div id='menu'>
-		<ul id='options'>
-			<li id="copy_switch">Copy</li>
-			<li id="sound_switch">Sound</li>
-			<li id="type_switch">Type</li>
-			<li id="link_switch">Link</li>
-			<li id="select_switch">Selection</li>
-			<li id="rotate_switch">Rotate</li>
-			<li id="clear_switch">Clear</li>
-		</ul>
-		<div class='flex'></div>
-		<ul id='extras'>
-			<li class='off'>Coarticulations</li>
-			<li class='off'>Diacritics</li>
-			<li class='off'>Suprasegmentals</li>
-			<li class='off'>Tones</li>
-		</ul>
+		<div class='toolbar-group'>
+			<span class='group-label'>Options</span>
+			<ul id='options'>
+				<li id="copy_switch">Copy</li>
+				<li id="sound_switch">Sound</li>
+				<li id="type_switch">Type</li>
+				<li id="link_switch">Link</li>
+				<li id="select_switch">Selection</li>
+				<li id="rotate_switch">Rotate</li>
+				<li id="clear_switch">Clear</li>
+			</ul>
+		</div>
+		<div class='toolbar-divider'></div>
+		<div class='toolbar-group'>
+			<span class='group-label'>Extras</span>
+			<ul id='extras'>
+				<li class='off'>Coarticulations</li>
+				<li class='off'>Diacritics</li>
+				<li class='off'>Suprasegmentals</li>
+				<li class='off'>Tones</li>
+			</ul>
+		</div>
 	</div>
 	<div id='extras-panels'></div>
 </main>
