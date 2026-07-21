@@ -451,9 +451,15 @@ function ipa() {
 
 function render(filename) {
 	filename = filename || 'ipa.txt'
-	fetch("ipa.php", {method: "POST", body: new URLSearchParams({mode: "2", filename: filename})})
-		.then(function(r) { return r.text() })
-		.then(function(data) {
+	Promise.all([
+		fetch("tables/consonants.txt").then(function(r) { return checkOk(r).text() }),
+		fetch("tables/vowels.txt").then(function(r) { return checkOk(r).text() }),
+		fetch("languages/" + filename).then(function(r) { return checkOk(r).text() })
+	])
+		.then(function(results) {
+			var letterSet = parseLetterSet(results[2])
+			var data = buildChartHalf("consonants", parseTableRows(results[0]), letterSet)
+				+ buildChartHalf("vowels", parseTableRows(results[1]), letterSet)
 			filename.indexOf(".") > -1 ? filename = capital(chomp(filename, 4)) : filename = filename
 			filename.toLowerCase().includes('ipa') ? filename = filename.toUpperCase() : filename = filename
 			document.title = filename + " | An Interactive IPA Chart"
@@ -486,12 +492,12 @@ function render(filename) {
 }
 
 function initialize() {
-	fetch("ipa.php", {method: "POST", body: new URLSearchParams({mode: "1"})})
-		.then(function(r) { return r.text() })
+	fetch("languages/index.json")
+		.then(function(r) { return checkOk(r).json() })
 		.then(function(data) {
 			var select = document.createElement("select")
 			select.id = "languages"
-			JSON.parse(data).forEach(function(value) {
+			data.forEach(function(value) {
 				var option = document.createElement("option")
 				option.textContent = capital(chomp(value, 4))
 				option.value = value
@@ -550,10 +556,11 @@ function extras() {
 			panel.className = "popup"
 			panel.id = table
 			panelsContainer.appendChild(panel)
-			fetch("ipa.php", {method: "POST", body: new URLSearchParams({mode: 4, table: table})})
-				.then(function(r) { return r.text() })
+			fetch("tables/" + table.toLowerCase() + ".txt")
+				.then(function(r) { return checkOk(r).text() })
 				.then(function(data) {
-					panel.insertAdjacentHTML("beforeend", data)
+					var html = buildOtherTable(table, parseTableRows(data))
+					panel.insertAdjacentHTML("beforeend", html)
 					panel.querySelectorAll("th.clickah").forEach(function(th) { th.style.display = "none" })
 					panel.querySelectorAll(".clickah").forEach(function(el) {
 						var sibling = el.nextElementSibling

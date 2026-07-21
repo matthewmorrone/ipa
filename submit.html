@@ -243,9 +243,15 @@ nav label {
 <script src='util.js'></script>
 <script>
 function render(filename) {
-	fetch("ipa.php", {method: "POST", body: new URLSearchParams({mode: "2", filename: filename})})
-		.then(function(r) { return r.text() })
-		.then(function(data) {
+	Promise.all([
+		fetch("tables/consonants.txt").then(function(r) { return checkOk(r).text() }),
+		fetch("tables/vowels.txt").then(function(r) { return checkOk(r).text() }),
+		fetch("languages/" + filename).then(function(r) { return checkOk(r).text() })
+	])
+		.then(function(results) {
+			var letterSet = parseLetterSet(results[2])
+			var data = buildChartHalf("consonants", parseTableRows(results[0]), letterSet)
+				+ buildChartHalf("vowels", parseTableRows(results[1]), letterSet)
 			var cv = document.getElementById("cv")
 			cv.innerHTML = ""
 			cv.insertAdjacentHTML("beforeend", data)
@@ -320,22 +326,18 @@ function initTheme() {
 	})
 }
 document.addEventListener('DOMContentLoaded', function() {
-	render('All')
+	render('all.txt')
 	initTheme()
 	document.getElementById("submit").addEventListener("click", function() {
 		var name = document.getElementById("name").value
 		if (name) {
 			var formData = new FormData(document.querySelector("form"))
-			formData.append("mode", "3")
-			formData.append("filename", name)
-			formData.append("notes", document.getElementById("notes").value)
-			log(Array.from(formData.entries()).map(function(e) { return e[0] + "=" + e[1] }).join("&"))
-			fetch("ipa.php", {method: "POST", body: formData})
-				.then(function(r) { return r.text() })
-				.then(function(data) {
-					alert("Thank you! " + capital(name) + " submitted.");
-					window.location.href = 'index.html'
-				})
+			var letters = formData.getAll("letters[]").map(function(l) { return l.trim() })
+			var body = letters.join("\r\n") + "\r\n\r\nnotes:\r\n" + document.getElementById("notes").value
+			var subject = "IPA language submission: " + capital(name)
+			var mailto = "mailto:matthewmorrone1@gmail.com?subject=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(body)
+			log(subject + "\n" + body)
+			window.location.href = mailto
 		}
 	})
 
@@ -344,10 +346,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
 	document.getElementById("showAll").addEventListener("click", function() {
 		if (this.checked) {
-			render('All')
+			render('all.txt')
 		}
 		else {
-			render('IPA.txt')
+			render('ipa.txt')
 		}
 	})
 	document.getElementById("toggleAll").addEventListener("click", function() {
