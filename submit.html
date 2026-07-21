@@ -4,67 +4,38 @@
 <meta charset=utf-8></meta>
 <title>Submit | An Interactive IPA Chart</title>
 <link href="/psi.ico" rel="shortcut icon" type="image/x-icon">
-<script>
-(function() {
-	var stored = localStorage.getItem('ipa-theme')
-	var theme = stored || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
-	document.documentElement.setAttribute('data-theme', theme)
-})()
-</script>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-:root {
-	--bg: #f7f4ee;
-	--surface: #ffffff;
-	--text: #2a2521;
-	--text-muted: #6f665c;
-	--border: #ddd6c9;
-	--border-strong: #c2b8a6;
-	--header-tint: #efe9dc;
-	--accent: #a8461f;
-	--accent-contrast: #ffffff;
-	--hover: rgba(168, 70, 31, 0.08);
-	--focus-ring: rgba(168, 70, 31, 0.35);
+@font-face {
+	font-family: "Raleway";
+	font-style: normal;
+	font-weight: 200px;
+	src: local("Raleway"), url(http://themes.googleusercontent.com/static/fonts/raleway/v6/cIFy4yrWPDz3zOxk7hIQLUuEpTyoUstqEm5AMlJo4.woff) format("woff");
 }
-:root[data-theme="dark"] {
-	--bg: #1a1d23;
-	--surface: #22262e;
-	--text: #ece8e0;
-	--text-muted: #9aa0aa;
-	--border: #3a4048;
-	--border-strong: #4d545e;
-	--header-tint: #262b33;
-	--accent: #e08a53;
-	--accent-contrast: #1a1d23;
-	--hover: rgba(224, 138, 83, 0.12);
-	--focus-ring: rgba(224, 138, 83, 0.4);
+@font-face {
+	font-family: "Open Sans";
+	font-style: normal;
+	font-weight: 200px;
+	src: local("Open Sans"), local("OpenSans"), url(http://themes.googleusercontent.com/static/fonts/opensans/v6/cJZKeOuBrn4kERxqtaUH3bO3LdcAZYWl9Si6vvxL-qU.woff) format("woff");
 }
 * {
 	margin: 0px;
 	padding: 0px;
-	box-sizing: border-box;
-}
-html {
-	min-height: 100%;
-	background: var(--bg);
 }
 body {
 	width: 100%;
-	min-height: 100%;
+	height: 100%;
 	margin: auto;
-	padding: 20px 0;
-	font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
-	background: var(--bg);
-	color: var(--text);
+	font-family: "Open Sans";
 }
 a {
-	color: var(--text);
+	color: black;
 	text-decoration: none;
 }
+header, header h1, footer {
+	font-family: "Raleway";
+}
 table, th, td {
-	border: 1px solid var(--border);
+	border: 1px solid black;
 	border-collapse: collapse;
 }
 th, td {
@@ -73,27 +44,17 @@ th, td {
 	min-width: 25px;
 	white-space: nowrap
 }
-th {
-	font-weight: 600;
-}
-th.side, th.third {
-	background: var(--header-tint);
-}
-tr:first-child th:first-child {
-	background: none;
-}
 .play {
 	display: none;
 }
 .on {
-	color: var(--text);
+	color: black;
 }
 .off {
-	color: var(--text-muted);
+	color: lightgray;
 }
 .sound {
 	font-family: arial;
-	color: var(--text);
 }
 .popup {
 	overflow: hidden;
@@ -114,20 +75,10 @@ caption {
 	text-align: center;
 }
 nav {
-	width: auto;
-	margin: 0 auto 40px;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	gap: 14px;
-	flex-wrap: wrap;
-	background: var(--surface);
-	border: 1px solid var(--border);
-	border-radius: 14px;
-	padding: 14px 22px;
-	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+	width: 30%;
+	margin: auto;
 }
-#cv, #type, #menu {
+#cv, #type, #menu, nav {
 	display: flex;
 	flex-flow: row nowrap;
 }
@@ -135,24 +86,14 @@ nav {
 	flex-grow: 2;
 }
 #language {
-	font-family: "Fraunces", Georgia, serif;
 	font-size: 150%;
 	margin: 20px;
 }
-#scratch, #notes {
+#scratch {
 	width: 100%;
 	clear: both;
 	font-size: 30px;
 	margin-top: 30px;
-	background: var(--surface);
-	color: var(--text);
-	border: 1px solid var(--border-strong);
-	border-radius: 8px;
-	padding: 12px;
-}
-#scratch:focus, #notes:focus {
-	outline: none;
-	box-shadow: 0 0 0 3px var(--focus-ring);
 }
 li {
 	list-style-type: none;
@@ -162,51 +103,12 @@ li {
 	clear: both;
 	width: 100%;
 	text-align: center;
-	color: var(--text-muted);
-	line-height: 1.9;
-	padding: 40px 20px 20px;
 }
 .link {
-	color: var(--accent);
+	color: blue;
 }
-nav button, nav input[type=text] {
-	font-family: inherit;
-	font-size: 14px;
-	padding: 8px 16px;
-	border-radius: 999px;
-	border: 1px solid var(--accent);
-	background: var(--accent);
-	color: var(--accent-contrast);
-	cursor: pointer;
-}
-nav input[type=text] {
-	background: var(--surface);
-	color: var(--text);
-	border-color: var(--border-strong);
-	cursor: text;
-	border-radius: 8px;
-}
-nav button:hover {
-	filter: brightness(0.92);
-}
-nav label {
-	color: var(--text);
-	font-size: 14px;
-}
-#theme_toggle {
-	font-family: inherit;
-	font-size: 20px;
-	line-height: 1;
-	background: var(--surface);
-	border: 1px solid var(--border-strong);
-	border-radius: 50%;
-	width: 40px;
-	height: 40px;
-	cursor: pointer;
-	color: var(--text);
-}
-#theme_toggle:hover {
-	background: var(--hover);
+button {
+	margin: auto;
 }
 [type='checkbox'] {
 	display: none;
@@ -218,12 +120,14 @@ nav label {
 #showAll {
 	display: inline-block;
 }
+tr:first-child th:first-child {
+	pointer-events: none;
+}
 </style>
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
 </head>
 <body>
 <nav>
-<button id="theme_toggle" aria-label="Toggle dark mode" title="Toggle dark mode">&#9788;</button>
 <button id="toggleAll">Toggle All</button>
 <label style='margin-right: 30px;' ><input id="showAll" type='checkbox' checked />&nbsp;Show All</label>
 <input type=text id=name />
@@ -311,23 +215,8 @@ function render(filename) {
 			})
 		})
 }
-function initTheme() {
-	var btn = document.getElementById('theme_toggle')
-	function updateIcon() {
-		var isDark = document.documentElement.getAttribute('data-theme') === 'dark'
-		btn.innerHTML = isDark ? '&#9789;' : '&#9788;'
-	}
-	updateIcon()
-	btn.addEventListener('click', function() {
-		var next = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'
-		document.documentElement.setAttribute('data-theme', next)
-		localStorage.setItem('ipa-theme', next)
-		updateIcon()
-	})
-}
 document.addEventListener('DOMContentLoaded', function() {
 	render('all.txt')
-	initTheme()
 	document.getElementById("submit").addEventListener("click", function() {
 		var name = document.getElementById("name").value
 		if (name) {
